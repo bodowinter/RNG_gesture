@@ -1,0 +1,2655 @@
+---
+title: "Analysis of RNG/gesture data"
+author: "Bodo"
+date: '2023-03-23'
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+This script analyses the Italian and English random number generation (RNG) data together in one go.
+
+# Setup
+
+Load packages:
+
+```{r message = FALSE, warning = FALSE}
+library(tidyverse)    # for all data processing and data viz
+library(patchwork)    # for double plots
+library(brms)         # for Bayesian regression models
+library(tidybayes)    # for stat_halfeye() function
+library(effsize)      # for Cohen's d
+```
+
+*Note*: The `stat_halfeye()` function does not feature on any of the published plots, hence we're not citing it in the paper.
+
+For reproducibility report versions:
+
+```{r}
+R.Version()$version.string
+packageVersion('tidyverse')
+packageVersion('brms')
+packageVersion('tidybayes')
+packageVersion('effsize')
+```
+
+Load data:
+
+```{r message = FALSE, warning = FALSE}
+# Experiment data, English:
+
+eng_2023 <- read_csv('../data/RNG_eng_first_bout_2023.csv')
+eng_2024 <- read_csv('../data/RNG_eng_second_bout_2024.csv') |> 
+  rename(id = `Participant ID`,
+         trial = order,
+         movement = Movement,
+         number = Number)
+
+# Experiment data, Italian:
+
+ita_2023 <- read_csv('../data/RNG_ita_first_bout_2023.csv')
+ita_2024 <- read_csv('../data/RNG_ita_second_bout_2024.csv')
+
+# Survey data (individual differences), English:
+
+meta_eng_2023 <- read_csv('../data/RNG_eng_metadata_first_bout_2023_with_gender.csv')
+meta_eng_2024 <- read_csv('../data/RNG_eng_metadata_second_bout_2024_with_gender.csv')
+
+# Survey data (individual differences), Italian:
+
+meta_ita_2023 <- read_csv('../data/RNG_ita_metadata_first_bout_2023.csv') |> 
+  rename(id = `Participant ID`)
+meta_ita_2024 <- read_csv('../data/RNG_ita_metadata_second_bout_2024.csv') |> 
+  rename(id = `Participant ID`)
+```
+
+# Process metadata
+
+Look at the structure of the metadata files:
+
+```{r}
+meta_eng_2023
+meta_ita_2023
+```
+
+Italian and English have different structures that need to be aligned so that we can merge the two and match it with the main experimental data.
+
+We have two scales:
+
+- the BAG scale which measures individual differences in gesture perception and production
+- the subjective numeracy scale, indicated as `NUM` in `meta_eng` and `SNS` in `meta_ita`
+
+## SNS scale adjustments
+
+Let's first deal with the subjective numeracy scale. This is the easier one of the two because all the items are scaled the same way, with higher values indicating more numeracy.
+
+Create a vector that has all the negative ones for English and then adjusts the scale to make it all positive, so we can take simple averages that are all scaled in the same direction. The only exception to this is the 7th question, for which lower values indicate preferences for words over percentages, and higher values indicates preferences for the more numerical display format.
+
+```{r}
+meta_eng_2023 <- meta_eng_2023 |>
+  mutate(score = case_when(item == 'NUM7' & score == 1 ~ 6,
+                           item == 'NUM7' & score == 2 ~ 5,
+                           item == 'NUM7' & score == 3 ~ 4,
+                           item == 'NUM7' & score == 4 ~ 3,
+                           item == 'NUM7' & score == 5 ~ 2,
+                           item == 'NUM7' & score == 6 ~ 1,
+                           .default = score))
+
+meta_eng_2024 <- meta_eng_2024 |>
+  mutate(score = case_when(item == 'NUM7' & score == 1 ~ 6,
+                           item == 'NUM7' & score == 2 ~ 5,
+                           item == 'NUM7' & score == 3 ~ 4,
+                           item == 'NUM7' & score == 4 ~ 3,
+                           item == 'NUM7' & score == 5 ~ 2,
+                           item == 'NUM7' & score == 6 ~ 1,
+                           .default = score))
+```
+
+Now we can simply take the average of the corresponding values per participant to get a summary score. We'll use the average throughout this rather than the sum because some questions have not been answered in the metadata, which leaves us with some `NA`'s. If we take the sum, then some people will naturally have lower values if they have an `NA` for a test item and that would be problematic as it doesn't reflect any real response.
+
+**Note**: For the 2024 English data (second bout of data collection), the `NUM` scale is `NA` for the first participant as that sheet has not been filled out. Won't matter anyway as this participant happened to be a non-native speaker that will be excluded from our analysis further down.
+
+```{r}
+# English:
+
+eng_num_2023 <- meta_eng_2023 |>
+  filter(str_detect(item, 'NUM')) |>
+  group_by(id) |>
+  summarize(score = mean(score, na.rm = TRUE))
+
+eng_num_2024 <- meta_eng_2024 |>
+  filter(str_detect(item, 'NUM')) |>
+  group_by(id) |>
+  summarize(score = mean(score, na.rm = TRUE))
+
+# Italian:
+
+ita_num_2023 <- meta_ita_2023 |>
+  select(starts_with('SNS_')) |>
+  rowwise() |>
+  summarize(score = mean(c(SNS_1, SNS_2,
+                           SNS_3, SNS_4,
+                           SNS_5, SNS_6,
+                           SNS_7, SNS_8), na.rm = TRUE)) |>
+  bind_cols(select(meta_ita_2023, id)) # reappend ID from original df
+
+ita_num_2024 <- meta_ita_2024 |>
+  select(starts_with('SNS_')) |>
+  rowwise() |>
+  summarize(score = mean(c(SNS_1, SNS_2,
+                           SNS_3, SNS_4,
+                           SNS_5, SNS_6,
+                           SNS_7, SNS_8), na.rm = TRUE)) |>
+  bind_cols(select(meta_ita_2024, id)) # reappend ID from original df
+```
+
+## BAG scale adjustments
+
+Now, let's do the `BAG` scale. This requires a bit more thinking since some of the questions are reverse, i.e., it's not always the case that higher values = higher gesture affinity.
+
+I checked the BAG scale questions, and they are structured as follows:
+
+- Questions 1-3: positive
+- Question 4: negative
+- Question 5: positive
+- Question 6: negative
+- Question 7-8: positive
+- Question 9: negative
+- Question 10: positive
+- Question 11: negative
+- Question 12: positive
+
+I'm honestly not 100% sure how to interpret Question 10... could see that question going both ways. **@Caterina**: Let me know what you think!
+
+Create a vector that has all the negative ones for English and then adjusts the scale to make it all positive, so we can take simple averages that are all scaled in the same direction.
+
+```{r}
+# Define vector:
+
+negatives <- str_c('BAG', c(4, 6, 9, 11))
+
+# Reset scores that match vector content in item column:
+
+meta_eng_2023 <- meta_eng_2023 |>
+  mutate(score = if_else(item %in% negatives,
+                         (score - 3) * (-1) + 3, score))
+
+meta_eng_2024 <- meta_eng_2024 |>
+  mutate(score = if_else(item %in% negatives,
+                         (score - 3) * (-1) + 3, score))
+
+# Compute averages:
+
+eng_BAG_2023 <- meta_eng_2023 |>
+  filter(str_detect(item, 'BAG')) |>
+  group_by(id) |>
+  summarize(score = mean(score, na.rm = TRUE))
+
+eng_BAG_2024 <- meta_eng_2024 |>
+  filter(str_detect(item, 'BAG')) |>
+  group_by(id) |>
+  summarize(score = mean(score, na.rm = TRUE))
+```
+
+Now do the same for the slightly different table structure of Italian:
+
+```{r}
+# Define vector differently (Italian has an underscore in the name):
+
+negatives <- str_c('BAG_', c(4, 6, 9, 11))
+
+# Redo the conversion:
+
+ita_BAG_2023 <- meta_ita_2023 |>
+  select(id, starts_with('BAG_')) |>
+  pivot_longer(BAG_1:BAG_12,
+               values_to = 'score', names_to = 'item') |>
+  mutate(score = if_else(item %in% negatives,
+                         (score - 3) * (-1) + 3, score)) |>
+  group_by(id) |>
+  summarize(score = mean(score, na.rm = TRUE))
+
+ita_BAG_2024 <- meta_ita_2024 |>
+  select(id, starts_with('BAG_')) |>
+  pivot_longer(BAG_1:BAG_12,
+               values_to = 'score', names_to = 'item') |>
+  mutate(score = if_else(item %in% negatives,
+                         (score - 3) * (-1) + 3, score)) |>
+  group_by(id) |>
+  summarize(score = mean(score, na.rm = TRUE))
+```
+
+## Merge metadata sets
+
+Now, merge everything. We have to remember however:
+
+The participants have the same names in both sub-experiments (English and Italian), but they are different people. To create a unique participant identifier, we can simply paste `language` labels with the `id` column, in which way `P01` becomes `english_P01` and `italian_P01` respectively. In addition, we have the same problem *within* each language group. For example, the first bout of the English data (2023) starts with participant `P01` and ended with participant `P31`. The second bout of data collection (2024) also number participants from `P01` onwards. So, we'll make `P01` of the second bout into `P32` and so on (`P33`, `P34` etc.).
+
+```{r}
+# SNS summary data tibbles:
+
+eng_num_2023$language <- 'english'
+ita_num_2023$language <- 'italian'
+
+eng_num_2024$language <- 'english'
+ita_num_2024$language <- 'italian'
+
+# BAG summary data tibbles:
+
+eng_BAG_2023$language <- 'english'
+ita_BAG_2023$language <- 'italian'
+
+eng_BAG_2024$language <- 'english'
+ita_BAG_2024$language <- 'italian'
+
+# Resort the `ita_num` tibble to match the others:
+
+ita_num_2023 <- select(ita_num_2023, id, score, language)
+ita_num_2024 <- select(ita_num_2024, id, score, language)
+
+# Merge respective files:
+
+all_num_2023 <- bind_rows(eng_num_2023, ita_num_2023)
+all_BAG_2023 <- bind_rows(eng_BAG_2023, ita_BAG_2023)
+
+all_num_2024 <- bind_rows(eng_num_2024, ita_num_2024)
+all_BAG_2024 <- bind_rows(eng_BAG_2024, ita_BAG_2024)
+
+# Both the BAG and the numeracy scale values are called `score`:
+
+all_num_2023 <- rename(all_num_2023, SNS = score)
+all_BAG_2023 <- rename(all_BAG_2023, BAG = score)
+
+all_num_2024 <- rename(all_num_2024, SNS = score)
+all_BAG_2024 <- rename(all_BAG_2024, BAG = score)
+
+# Merge the two summary files together:
+
+all_meta_2023 <- bind_cols(all_num_2023, select(all_BAG_2023, BAG))
+all_meta_2024 <- bind_cols(all_num_2024, select(all_BAG_2024, BAG))
+
+# Create unique participant identifier:
+
+all_meta_2023 <- mutate(all_meta_2023,
+                        id = str_c(language, '_', id)) |>
+  select(-language)
+
+all_meta_2024 <- mutate(all_meta_2024,
+                        id = str_c(language, '_', id)) |>
+  select(-language)
+
+# Show random snippets the data for check:
+
+sample_n(all_meta_2023, 10)
+sample_n(all_meta_2024, 10)
+```
+
+Looks good.
+
+## Merge gender data back in
+
+Extract gender information: Before we proceed, the gender information is entered differently for the English data however, so let's just extract that for now and save it in two separate objects, one for each bout of the English data collection.
+
+```{r}
+eng_2023_gender <- distinct(meta_eng_2023, id, gender)
+eng_2024_gender <- distinct(meta_eng_2024, id, gender)
+```
+
+Merge the gender data back into the files so that it is carried through the datasets below as well.
+
+```{r}
+# Rename ids so they match across datasets:
+
+eng_2023_gender <- mutate(eng_2023_gender, id = str_c('english_', id))
+eng_2024_gender <- mutate(eng_2024_gender, id = str_c('english_', id))
+
+# Merge English data in there:
+
+all_meta_2023 <- left_join(all_meta_2023, eng_2023_gender)
+all_meta_2024 <- left_join(all_meta_2024, eng_2024_gender)
+```
+
+Do the same for Italian:
+
+```{r}
+# Rename ids for consistent matching:
+
+meta_ita_2023 <- mutate(meta_ita_2023, id = str_c('italian_', id)) |> 
+  rename(gender = Gender)
+meta_ita_2024 <- mutate(meta_ita_2024, id = str_c('italian_', id)) |> 
+  rename(gender = Gender)
+
+# Merge Italian gender data into there, 2023 data:
+
+gender_2023 <- meta_ita_2023[match(all_meta_2023$id, meta_ita_2023$id), ]$gender
+gender_2023 <- str_replace_all(gender_2023[!is.na(gender_2023)],
+                'femele', 'female')
+all_meta_2023[32:nrow(all_meta_2023), ]$gender <- gender_2023
+
+# Merge Italian gender data into there, 2024 data:
+
+gender_2024 <- meta_ita_2024[match(all_meta_2024$id, meta_ita_2024$id), ]$gender
+gender_2024 <- gender_2024[!is.na(gender_2024)]
+all_meta_2024[37:nrow(all_meta_2024), ]$gender <- gender_2024
+
+# Check that it is all correct:
+
+all_meta_2023 |> print(n = Inf)
+all_meta_2024 |> print(n = Inf)
+```
+
+Looks good.
+
+# Process main data
+
+## Fix extraneous rows
+
+The final Italian rows are NAs probably because of some Excel error. Exclude:
+
+```{r}
+# Check last four rows:
+
+slice_tail(ita_2024, n = 4)
+
+# Get rid of NAs:
+
+ita_2024 <- filter(ita_2024, !is.na(movement))
+
+# Get rid of extra column:
+
+ita_2024 <- ita_2024[, -ncol(ita_2024)]
+
+# Get rid of unwanted columns in the 2023 data:
+
+ita_2023 <- ita_2023 |> 
+  select(-data_entry, -comment)
+```
+
+## Fix incorrect
+
+Get rid of the ones that have comment `oops` in `eng_2023` — these are the ones that went over permitted range of [1, 30]. For the Italian dataset, we can simply delete the individual cases, which are `0`, `111` and `211`. However, we can't just filter the tibbles to exclude these, because this would render the relative difference analysis below wrong for these values (we will get a distance between two values that were not actually adjacent in the original sequence). I therefore replace them with `NA` values instead so that relative differences computed later will also be `NA`.
+
+```{r}
+# English 2023:
+
+eng_2023 <- mutate(eng_2023,
+                   number = if_else(!is.na(comment) & comment == 'oops',
+                                    NA, number))
+
+# Italian:
+
+ita_2023 <- mutate(ita_2023,
+                   number = if_else(number < 1 | number > 30,
+                                    NA, number))
+ita_2024 <- mutate(ita_2024,
+                   number = if_else(number < 1 | number > 30,
+                                    NA, number))
+```
+
+For the new 2024 data (second bout), we need to discard the missing values (they are always here at the end of the rows in the English data), and following this, set the cases that are higher than 30 or lower than 1 to `NA`.
+
+```{r}
+eng_2024 <- filter(eng_2024,
+                   !is.na(number)) |> 
+  mutate(number = if_else(number > 30 | number < 1, NA, number))
+```
+
+Exclude non-native participants as per metadata:
+
+```{r}
+# Define vector of participant names to exclude:
+
+exclude_ppts <- c('P01', # latvian native speaker
+                  'P04', # dutch native speaker,
+                  'P08', 'P10', 'P13', 'P16')
+
+eng_2024 <- filter(eng_2024, !id %in% exclude_ppts)
+```
+
+Now, let's merge the individual differences data processed in the last section back into these tibbles. The labels in the `id` column for the data files are still just `P01`, `P02` etc., but in order to merge them (and not confuse `P01` for English and Italian, as these are separate people), we need to also change the identifiers in the data file, so that they match the metadata file. Let's do Italian first:
+
+```{r}
+# Match identifiers in data table to be same of metadata:
+
+ita_2023 <- mutate(ita_2023,
+                   id = str_c('italian_', id))
+
+# Merge:
+
+ita_2023 <- left_join(ita_2023, all_meta_2023)
+
+# Same for 2024 data from Italian:
+
+ita_2024 <- mutate(ita_2024,
+                   id = str_c('italian_', id))
+
+# Merge:
+
+ita_2024 <- left_join(ita_2024, all_meta_2024)
+```
+
+Re-order:
+
+```{r}
+ita_2023 <- select(ita_2023,
+                   id, gender, trial, movement, SNS, BAG, number)
+ita_2024 <- select(ita_2024,
+                   id, gender, trial, movement, SNS, BAG, number)
+```
+
+Double-check:
+
+```{r}
+sample_n(ita_2023, 3)
+sample_n(ita_2024, 3)
+```
+
+Then English:
+
+```{r}
+# Match identifiers in data table to be same of metadata:
+
+eng_2023 <- mutate(eng_2023,
+                   id = str_c('english_', id))
+
+# Merge:
+
+eng_2023 <- left_join(eng_2023, all_meta_2023)
+
+# Same for 2024 data from Italian:
+
+eng_2024 <- mutate(eng_2024,
+                   id = str_c('english_', id))
+
+# Merge:
+
+eng_2024 <- left_join(eng_2024, all_meta_2024)
+```
+
+Double-check:
+
+```{r}
+sample_n(eng_2023, 3)
+sample_n(eng_2024, 3)
+```
+
+Put both bouts for each year together, for English. Here we have to be careful as participants have been named starting with `P01` for both data collection runs. So we should make the `P02` from the second bout start in sequence where the other one stopped. The last participant is `P31` in the first bout, so we'll start participant numbers in the second bout with `P32`.
+
+```{r}
+# Extract relevant columns:
+
+eng_2023 <- select(eng_2023,
+                   id, gender, trial, movement, SNS, BAG, number)
+eng_2024 <- select(eng_2024,
+                   id, gender, trial, movement, SNS, BAG, number)
+
+# Change IDs in 2024 dataset so they carry on from after P31, which is the last ppt of the first English dataset:
+
+ppt_ids <- distinct(eng_2024, id) |>
+  mutate(id_02 = str_c('english_P', 32:(32+27)))
+
+# Show participant ID relabels from the second bout English:
+
+ppt_ids |> print(n = Inf)
+
+# Re-merge into, replacing old PPT ids in that column:
+
+eng_2024$id <- ppt_ids[match(eng_2024$id, ppt_ids$id), ]$id_02
+
+# Starting condition labels:
+
+eng_2023$start_position <- 'outwards' 
+eng_2024$start_position <- 'inwards' 
+
+# Put both together:
+
+eng <- bind_rows(eng_2023, eng_2024)
+```
+
+Double-check:
+
+```{r}
+sample_n(eng, 10)
+```
+
+Combine Italian ones. We'll have to do the same thing here, i.e., be wary of the overlapping participant identifiers across the two bouts of data collection.
+
+```{r}
+# New identifiers for second Italian experiment:
+
+ppt_ids <- distinct(ita_2024, id) |>
+  mutate(id_02 = str_c('italian_P', 33:(33+28)))
+
+# Show:
+
+ppt_ids |> print(n = Inf)
+
+# Merge back in:
+
+ita_2024$id <- ppt_ids[match(ita_2024$id, ppt_ids$id), ]$id_02
+
+# Starting condition labels:
+
+ita_2023$start_position <- 'outwards' 
+ita_2024$start_position <- 'inwards' 
+
+# Put together:
+
+ita <- bind_rows(ita_2023, ita_2024)
+```
+
+Double-check:
+
+```{r}
+sample_n(ita, 10)
+```
+
+Create a `language` columns for both tibbles:
+
+```{r}
+eng$language <- 'english'
+ita$language <- 'italian'
+```
+
+Put both tibbles together into one:
+
+```{r}
+df <- bind_rows(ita, eng)
+```
+
+Our research assistant Yuhan was instructed to go over 80 trials by several if there were any `NA`'s, so that we can make up for missing values and will always have the same number of data points per participant. To streamline this data, we need to loop through each participant, count the number of `NA`'s in the trials up to 80, and then take as many extras as there have been `NA`'s in the initial sequence 1-80 trials.
+
+The whole thing gets a bit more complex because some of the data points behind trial = 80 may themselves be `NA` and if we want to have 80 trials per participant, we may have to have extra data for several participants. One extra bit of complication is that in the Italian data, there are a few participants for which there is not enough extra trials, so we'll have to less than 80 data points for those, but also, we'll have to make sure that the loop doesn't break by making some exceptions.
+
+```{r}
+# Vector of participants:
+
+all_ppts <- unique(df$id)
+
+# Create empty results object to be filled in loop:
+
+res <- c()
+
+# Loop through:
+
+for (i in seq_along(all_ppts)) {
+  
+  # Extract subset tibble that only contains ith participant:
+  
+  this_df <- filter(df, id == all_ppts[i])
+  
+  # NA's within first 80 trials:
+  
+  N_missing <- this_df |>
+    filter(trial <= 80, is.na(number)) |>
+    nrow()
+  
+  # Get the respective amount of extra trials, accounting for NAs, including in extras:
+  
+  if (N_missing == 0) { # if nothing is missing, set final trial variable to 80
+    
+    final_trial <- 80
+    
+  } else { # if something is missing
+    
+    this_extra <- this_df |>
+      filter(trial > 80) |> 
+      filter(!is.na(number))
+    
+    if (nrow(this_extra) == 0) { # if no extras
+      final_trial <- 80
+      
+    } else {
+      
+      final_trial <- this_extra |>
+        slice_head(n = N_missing) |> 
+        pull(trial) |>
+        max()
+    }
+  }
+  
+  # Some of the new data (second bout, have less than 80 trials, so need to be careful not to introduce NAs by appending empty columns):
+  
+  if (nrow(this_df) < 80) {
+    final_trial <- nrow(this_df)
+  }
+
+  # Get the respective numbers of trials:
+  
+  this_df <- this_df[1:final_trial, ]
+  
+  # Print final trial variable:
+  
+  cat(str_c('Participant ID number ', unique(this_df$id), '; and the final trial variable is... ', final_trial, '\n'))
+  
+  # Append into main results:
+  
+  res <- bind_rows(res, this_df)
+}
+```
+
+Compare number of rows:
+
+```{r}
+nrow(res)
+nrow(df)
+```
+
+Ok, so there's less, that's good (what to be expected).
+
+Let's then check how many non-NA data points we have per participant:
+
+```{r}
+res |> 
+  filter(!is.na(number)) |> 
+  count(id) |> 
+  count(n) |> 
+  mutate(p = nn / sum(nn))
+```
+
+Looks pretty good — we have 80 data points for almost everyone (87% of all participants), and then for just a few others, we're missing only one or two data points. At most we're missing 4 data points, which is not a lot when considering we have 80 data points per participant.
+
+How much was it in the original?
+
+```{r}
+df |> 
+  filter(!is.na(number)) |> 
+  count(id) |> 
+  count(n)
+```
+
+Ok, let's use the new data then:
+
+```{r}
+df <- res
+```
+
+Double-check:
+
+```{r}
+sample_n(df, 10)
+```
+
+Looks like we've got all the info we need in our analysis.
+
+# Overview of sample
+
+How many participants do we have per language?
+
+```{r}
+df |>
+  distinct(language, id) |>
+  count(language)
+```
+
+59 English-speaking participants, and 61 Italian participants.
+
+How many are what gender?
+
+```{r}
+df |> 
+  distinct(language, gender, id) |> 
+  count(language, gender) |> 
+  group_by(language) |> 
+  mutate(p = n / sum(n))
+```
+
+Without `NA`'s, how many values do we have?
+
+```{r}
+df |> 
+  filter(!is.na(number)) |> 
+  count(language) |> 
+  mutate(prop = n / sum(n))
+
+# Total:
+
+df |> filter(!is.na(number)) |> nrow()
+```
+
+9581 data points, split almost exactly in between the two languages (English: 49%; Italian: 51%).
+
+# Descriptive statistics
+
+## Average effect
+
+Overall average by movement:
+
+```{r}
+df |> 
+  group_by(movement) |> 
+  summarize(M = mean(number, na.rm = TRUE),
+            SD = sd(number, na.rm = TRUE))
+```
+
+The standard deviation hast o be interpreted with caution since it's discrete data. But it's noteworthy that it is quite high. That makes sense given that participants say numbers in the range 1 to 30.
+
+Check the descriptive averages of language group and also starting position:
+
+```{r}
+df |> 
+  group_by(language, movement) |> 
+  summarize(M = mean(number, na.rm = TRUE))
+```
+
+Similar patterns for both English and Italian in the aggregate. English slightly higher difference (= 0.9), compared to Italian (= 0.7).
+
+```{r}
+df |> 
+  group_by(start_position, movement) |> 
+  summarize(M = mean(number, na.rm = TRUE))
+```
+
+Similar results for starting position. Slightly "better" (= more in line with our hypothesis) only marginally by 0.1 in the `inwards` condition.
+
+There also seems to be a language effect going on where the values are higher for Italian? Let's look at just that:
+
+```{r}
+df |> 
+  group_by(language) |> 
+  summarize(M = mean(number, na.rm = TRUE))
+```
+
+
+## Consistency across individuals
+
+Let's look at how consistent this pattern is across individuals. Calculate averages for both movement conditions per participant:
+
+```{r}
+df_ppt <- df |> 
+  group_by(id, language, movement) |> 
+  summarize(M = mean(number, na.rm = TRUE))
+
+# Show:
+
+df_ppt |> 
+  print(n = Inf)
+```
+
+Use this to compute difference scores (outwards minus inwards average) per participant:
+
+```{r}
+df_ppt_wide <- df_ppt |>
+  pivot_wider(values_from = M, names_from = movement) |> 
+  mutate(diff = outwards - inwards)
+
+# Show:
+
+df_ppt_wide |> 
+  print(n = Inf)
+```
+
+How many people have a positive effect? To answer this question, I'll create a variable `effect` that codes for this, based on the `diff` column we just created. Here, we're simply looking at the sign, so a positive difference (outwards - inwards) means the effect was `congruent` with our hypothesis, i.e., numbers were higher in the `outwards` condition.
+
+```{r}
+df_ppt_wide <- df_ppt_wide |> 
+  mutate(effect = if_else(diff > 0, 'congruent', 'incongruent')) |> 
+  ungroup()
+
+# Count:
+
+df_ppt_wide |> 
+  count(language, effect) |> 
+  group_by(language) |> 
+  mutate(prop = n / sum(n),
+         prop = round(prop, 2))
+```
+
+For English, 37 as opposed to 22 (63%) are congruent; for Italian, 41 (67%) as opposed to 20 (33%) are congruent. That's pretty consistent! For comparison, the SNARC effect is reliably found in the average but often characterizes only around a third of the sample of participants, i.e., most people *don't* actually show a SNARC effect. Luckily for this phenomenon, most people *do* show the predicted effect.
+
+Across the whole dataset, what is the number of participants having a positive difference?
+
+```{r}
+df_ppt_wide |> 
+  count(effect) |> 
+  mutate(prop = n / sum(n),
+         prop = round(prop, 2))
+```
+
+65% across the whole dataset, or 78 who showed the effect, versus 42 who did not.
+
+# Data visualization
+
+## Density plot of differences
+
+Show the distribution of difference scores for a closer look:
+
+```{r}
+# Plot basics:
+
+diff_p <- df_ppt_wide |> 
+  ggplot(aes(x = diff)) +
+  geom_density(fill = 'purple', alpha = 0.8) +
+  geom_vline(xintercept = 0, linetype = 'dashed')
+
+# Axes and labels:
+
+diff_p <- diff_p +
+  scale_y_continuous(expand = c(0, 0),
+                     limits = c(0, 0.3),
+                     breaks = seq(0, 0.3, 0.1)) +
+  xlab('Difference score') +
+  ylab('Probability density')
+
+# Cosmetics:
+
+diff_p <- diff_p +
+  theme_classic()
+
+# Show and save:
+
+diff_p
+ggsave(plot = diff_p,
+       file = '../figures/difference_scores.pdf',
+       width = 6, height = 4.5)
+```
+
+## Pair plot
+
+Let's create a pair plot to show the data, with lines connecting the inwards and outwards averages per participant. What we'll then do is color the lines separately for whether they are congruent with our hypothesis (outwards = more) or incongruent. For this we need to merge the `effect` column from the `df_ppt_wide` data into the `df_ppt` data frame first.
+
+```{r}
+df_ppt <- left_join(df_ppt,
+                    select(df_ppt_wide, id, effect))
+```
+
+For the plot we also want to provide annotations as to how many people have a congruent or incongruent effect, and that will be positioned to the right of the `outwards` category. So we should get the mean `outwards` magnitude across participants for the congruent and incongruent participants separately.
+
+```{r}
+annotate_y_positions <- df_ppt |> 
+  filter(movement == 'outwards') |> 
+  group_by(effect) |> 
+  summarize(M = mean(M)) |>
+  pull(M)
+
+# Extract percentages to be used for labels:
+
+annotate_labels <- df_ppt_wide |> 
+  count(effect) |> 
+  mutate(prop = n / sum(n),
+         prop = round(prop, 2),
+         percentage = prop * 100,
+         percentage = str_c(percentage, '%')) |> 
+  pull(percentage)
+```
+
+Now we can create the plot:
+
+```{r}
+# Plot basics:
+
+pair_p <- df_ppt |>
+  ggplot(aes(x = movement, y = M,
+             group = id)) +
+  geom_line(aes(col = effect), alpha = 0.8) +
+  geom_point(aes(fill = movement), size = 2, alpha = 0.7,
+             shape = 21, col = 'black')
+
+# Annotations:
+
+pair_p <- pair_p +
+  annotate('text',
+           x = rep(2.07, 2), y = annotate_y_positions,
+           label = str_c(annotate_labels,
+                         c(' of participants\ncongruent',
+                           ' of participants\nincongruent')),
+           col = c('black', 'grey'),
+           hjust = 0,
+           size = 3)
+
+# Axes and labels:
+
+pair_p <- pair_p +
+  scale_color_manual(values = c('black', 'grey')) +
+  scale_fill_manual(values = c('purple', 'steelblue')) +
+  scale_y_continuous(limits = c(6, 20),
+                     breaks = seq(6, 20, 2)) +
+  xlab(NULL) +
+  ylab('Participant average') +
+  coord_cartesian(clip = 'off')
+
+# Cosmetics:
+
+pair_p <- pair_p +
+  theme_classic() +
+  theme(legend.position = 'none',
+        axis.title.y = element_text(margin = margin(r = 10),
+                                    size = 12),
+        axis.text.x = element_text(face = 'bold', size = 10),
+        plot.margin = margin(r = 42, t = 2, l = 2, b = 2))
+
+# Show and save:
+
+pair_p
+ggsave(plot = pair_p,
+       file = '../figures/pair_plot.pdf',
+       width = 3.5, height = 4.5)
+```
+
+This looks pretty good. Those two participants with the *massive* effects are noteworthy, and we might want to do the analysis without that person to make sure that the effect is not driven by this obviously really influential point.
+
+## Extreme cases
+
+Let's try to find that participant and keep them in mind throughout the analysis below.
+
+```{r}
+filter(df_ppt_wide, diff > 6)
+```
+
+The two extreme cases are `english_P19` and `english_P36`. Store them in a vector to latter see how results are affected by excluding these two data points.
+
+```{r}
+extreme_cases <- filter(df_ppt_wide, diff > 6) |> pull(id)
+```
+
+# Inferential statistics
+
+## Quick-and-dirty tests
+
+Quick and dirty paired t-test on the by-participant averages, and a non-parametric equivalent just in case, although the data looks pretty normally distributed in the difference scores, which means this should actually be fine.
+
+```{r}
+# t-test, parametric:
+
+t.test(filter(df_ppt, movement == 'inwards')$M,
+       filter(df_ppt, movement == 'outwards')$M,
+       paired = TRUE,
+       var.equal = TRUE)
+
+# Wilcox test, non-parametric:
+
+wilcox.test(filter(df_ppt, movement == 'inwards')$M,
+            filter(df_ppt, movement == 'outwards')$M,
+            paired = TRUE)
+```
+
+Effect size:
+
+```{r}
+cohen.d(M ~ movement,
+        paired = TRUE,
+        data = df_ppt)
+```
+
+Small effect, with Cohen's d = 0.48.
+
+What about when excluding those two extreme data points?
+
+```{r}
+# t-test, parametric:
+
+t.test(filter(df_ppt, !id %in% extreme_cases, movement == 'inwards')$M,
+       filter(df_ppt, !id %in% extreme_cases, movement == 'outwards')$M,
+       paired = TRUE,
+       var.equal = TRUE)
+
+# Wilcox test, non-parametric:
+
+wilcox.test(filter(df_ppt, !id %in% extreme_cases, movement == 'inwards')$M,
+            filter(df_ppt, !id %in% extreme_cases, movement == 'outwards')$M,
+            paired = TRUE)
+```
+
+Still significant.
+
+A binomial test of just how many have positive sign is also significant.
+
+```{r}
+# Extract vector of congruent versus incongruent:
+
+congruent_v_incongruent <- df_ppt_wide |> count(effect) |> pull(n)
+
+# Test this:
+
+binom.test(congruent_v_incongruent)
+```
+
+Looks good too. While I don't care much about significance tests, it's nice to know that our results look strong when looked at from this very simple perspective that a lot of psych journals would consider to be good evidence.
+
+## Main model
+
+MCMC settings for better convergence (same for all models):
+
+```{r}
+mcmc_controls <- list(adapt_delta = 0.98,
+                      max_treedepth = 13)
+```
+
+Set up mu/phi parametrization of beta-binomial (instead of hard-to-interpret a,b-parameterization) as a custom family. This code is from Alexandra Lorson:
+
+```{r}
+beta_binomial2 <- custom_family(
+  "beta_binomial2", dpars = c("mu", "phi"),
+  links = c("logit", "log"),
+  lb = c(0, 2), ub = c(1, NA),
+  type = "int", vars = "vint1[n]"
+)
+
+stan_funs <- "
+  real beta_binomial2_lpmf(int y, real mu, real phi, int T) {
+    return beta_binomial_lpmf(y | T, mu * phi, (1 - mu) * phi);
+  }
+  int beta_binomial2_rng(real mu, real phi, int T) {
+    return beta_binomial_rng(T, mu * phi, (1 - mu) * phi);
+  }
+"
+
+stanvars <- stanvar(scode = stan_funs, block = "functions")
+```
+
+Add set size to main tibble:
+
+```{r}
+df <- mutate(df, set_size = 30)
+```
+
+Build a model of the absolute differences:
+
+```{r, eval = FALSE}
+beta_mdl <- brm(number | vint(set_size) ~ 1 +
+                  movement +
+                  (1 + movement|id),
+                
+                # Params:
+                
+                data = df,
+                family = beta_binomial2,
+                stanvars = stanvars,
+                
+                # MCMC settings:
+                    
+                cores = 4, init = 0, control = mcmc_controls,
+                warmup = 3000, iter = 5000, chains = 4)
+
+# Save:
+
+save(beta_mdl,
+     file = '../models/beta_mdl.RData')
+```
+
+Load the model for the markdown (the actual code chunks have been set to `eval = FALSE` as the models are precompiled).
+
+```{r, eval = TRUE}
+load('../models/beta_mdl.RData')
+```
+
+Check model:
+
+```{r}
+beta_mdl
+```
+
+Test main hypothesis:
+
+```{r}
+hypothesis(beta_mdl, 'movementoutwards > 0')
+```
+
+Create the function for PP check:
+
+```{r}
+# posterior_predict_beta_binomial2 <- function(i, prep, ...) {
+#   mu <- brms::get_dpar(prep, "mu", i = i)
+#   phi <- brms::get_dpar(prep, "phi", i = i)
+#   trials <- prep$data$vint1[i]
+#   beta_binomial2_rng(mu, phi, trials)
+# }
+```
+
+Check posterior predictive simulations:
+
+```{r}
+# pp_check(beta_mdl)
+```
+
+Extract the posterior of the condition difference for visualization:
+
+```{r}
+# Plot basics:
+
+diff_p <- as_draws_df(beta_mdl, variable = 'b_movementoutwards') |> 
+  ggplot(aes(x = b_movementoutwards)) +
+  stat_halfeye(fill = 'purple', alpha = 0.8) +
+  geom_vline(xintercept = 0, linetype = 'dashed')
+
+# Axes and labels:
+
+diff_p <- diff_p +
+  scale_x_continuous(limits = c(-0.25, 0.25),
+                     breaks = seq(-0.25, 0.25, 0.05)) +
+  scale_y_continuous(#expand = c(0, 0),
+                     limits = c(0, 1),
+                     breaks = seq(0, 1, 0.25)) +
+  xlab('Gesture coefficient\n(outwards - inwards)') +
+  ylab('Probability density')
+
+# Cosmetics:
+
+diff_p <- diff_p +
+  theme_classic() +
+  theme(axis.title.y = element_text(margin = margin(r = 10),
+                                    size = 12),
+        axis.title.x = element_text(face = 'bold', size = 12,
+                                    margin = margin(t = 10)))
+
+# Show and save:
+
+diff_p
+ggsave(plot = diff_p,
+       file = '../figures/main_mdl_posterior_effect.pdf',
+       width = 6, height = 4.5)
+```
+
+As can be seen, the posterior is to the right of zero, which means that given this data and model, it is quite implausible that the gesture effect would go the other way around...
+
+## Language interaction
+
+Build a model with the group effect. First, contrast code (sum-coding) both movement and language so that we can interpret the coefficients better later on:
+
+```{r}
+# Make into factor:
+
+df <- mutate(df,
+             movement_c = factor(movement, levels = c('outwards', 'inwards')),
+             language_c = factor(language, levels = c('italian', 'english')))
+
+# Sum-code:
+
+contrasts(df$movement_c) <- contr.sum(2)
+contrasts(df$language_c) <- contr.sum(2)
+
+# Check:
+
+contrasts(df$movement_c)
+contrasts(df$language_c)
+```
+
+Now, run the model:
+
+```{r, eval = FALSE}
+beta_group_mdl <- brm(number | vint(set_size) ~ 1 +
+                        movement_c +
+                        language_c +
+                        movement_c:language_c +
+                        (1 + movement_c|id),
+                      
+                      # Params:
+                      
+                      data = df,
+                      family = beta_binomial2,
+                      stanvars = stanvars,
+                
+                      # MCMC settings:
+                    
+                      cores = 4, init = 0, control = mcmc_controls,
+                      warmup = 3000, iter = 5000, chains = 4)
+
+# Save:
+
+save(beta_group_mdl,
+     file = '../models/beta_group_mdl.RData')
+```
+
+Load the model for the markdown (the actual code chunks have been set to `eval = FALSE` as the models are precompiled).
+
+```{r, eval = TRUE}
+load('../models/beta_group_mdl.RData')
+```
+
+Show:
+
+```{r}
+beta_group_mdl
+```
+
+Hypothesis tests for movement, language, and movement * language interaction effect:
+
+```{r}
+hypothesis(beta_group_mdl, 'movement_c1 > 0')
+hypothesis(beta_group_mdl, 'language_c1 > 0')
+hypothesis(beta_group_mdl, 'movement_c1:language_c1 < 0')
+```
+
+Absolutely no interaction. The language effect is unexpected! Let's see how much larger our expected gesture effect is:
+
+```{r}
+hypothesis(beta_group_mdl, 'movement_c1 > language_c1')
+```
+
+We're 68% certain that the gesture effect is stronger than the language effect, or the evidence in favor of gesture being stronger is 1.78 to 1. How much larger is the movement effect?
+
+```{r}
+# Show coefficient table:
+
+fixef(beta_group_mdl)
+
+# Compare movement effect (2nd row) against language (3rd):
+
+fixef(beta_group_mdl)[2, 1] / fixef(beta_group_mdl)[3, 1]
+```
+
+The gesture effect is 1.15 as large as the language effect.
+
+Get all the posterior values for the three fixed effects coefficients:
+
+```{r}
+group_posts <- as_draws_df(beta_group_mdl) |> 
+  select(b_movement_c1:`b_movement_c1:language_c1`) |> 
+  pivot_longer(b_movement_c1:`b_movement_c1:language_c1`,
+               values_to = 'estimate',
+               names_to = 'coefficient') |> 
+  mutate(coefficient = if_else(coefficient == 'b_movement_c1',
+                               'gesture effect', coefficient),
+         coefficient = if_else(coefficient == 'b_language_c1',
+                               'language effect', coefficient),
+         coefficient = if_else(coefficient == 'b_movement_c1:language_c1',
+                               'gesture * language interaction', coefficient))
+
+# Show:
+
+group_posts
+```
+
+Create a density plot of the three fixed effects.
+
+```{r}
+# Order of levels:
+
+fac_order <- c('gesture effect', 'language effect',
+               'gesture * language interaction')
+
+# Plot basics:
+
+diff_p <- group_posts |> 
+  mutate(coefficient = factor(coefficient, levels = fac_order)) |> 
+  ggplot(aes(x = estimate)) +
+  facet_wrap(~coefficient, nrow = 3) +
+  geom_density(fill = 'purple')
+
+# Axes and labels:
+
+diff_p <- diff_p +
+  geom_vline(xintercept = 0, linetype = 'dashed') +
+  scale_x_continuous(limits = c(-0.15, 0.15),
+                     breaks = seq(-0.15, 0.15, 0.05),
+                     labels = c("-0.15", "-0.10", "-0.05", "0",
+                                "0.05", "0.10", "0.15")) +
+  scale_y_continuous(limits = c(0, 40),
+                     breaks = seq(0, 40, 10)) +
+  xlab('Posterior value (log odds)') +
+  ylab('Density')
+
+# Cosmetics:
+
+diff_p <- diff_p +
+  theme_classic() +
+  theme(axis.title.y = element_text(margin = margin(r = 10),
+                                    size = 12),
+        axis.title.x = element_text(face = 'bold', size = 12,
+                                    margin = margin(t = 10)),
+        strip.background = element_rect(fill = 'grey'))
+
+# Show and save:
+
+diff_p
+ggsave(plot = diff_p,
+       file = '../figures/group_mdl_posterior_effect.pdf',
+       width = 4, height = 6.5)
+```
+
+## Starting position
+
+Build a model with starting position as well.
+
+As we're interested in the interaction, it would make sense to sum code the binary terms nested in the interaction. We already got `movement_c` from the above, and all that's needed is `start_c`:
+
+```{r}
+# Make into factor:
+
+df <- mutate(df,
+             start_c = factor(start_position, levels = c('outwards', 'inwards')))
+
+# Sum-code:
+
+contrasts(df$start_c) <- contr.sum(2)
+
+# Check:
+
+contrasts(df$start_c)
+```
+
+Now we can run the model:
+
+```{r, eval = FALSE}
+start_mdl <- brm(number | vint(set_size) ~ 1 +
+                   movement_c + start_c +
+                   movement_c:start_c +
+                   (1 + movement_c|id),
+                 
+                 # Params:
+                 
+                 data = df,
+                 family = beta_binomial2,
+                 stanvars = stanvars,
+                
+                 # MCMC settings:
+                    
+                 cores = 4, init = 0, control = mcmc_controls,
+                 warmup = 3000, iter = 5000, chains = 4)
+
+# Save:
+
+save(start_mdl,
+     file = '../models/start_mdl.RData')
+```
+
+Load the model for the markdown (the actual code chunks have been set to `eval = FALSE` as the models are precompiled).
+
+```{r, eval = TRUE}
+load('../models/start_mdl.RData')
+```
+
+Check model:
+
+```{r}
+start_mdl
+```
+
+Test main hypothesis:
+
+```{r}
+hypothesis(start_mdl, 'movement_c1 > 0')
+hypothesis(start_mdl, 'start_c1 > 0')
+hypothesis(start_mdl, 'movement_c1:start_c1 > 0')
+```
+
+## Gender
+
+Check whether this is affected by gender. For this, let's sum-code gender:
+
+```{r}
+df <- mutate(df,
+             gender_c = factor(gender, levels = c('male', 'female')))
+
+# Sum-code:
+
+contrasts(df$gender_c) <- contr.sum(2)
+
+# Check:
+
+contrasts(df$gender_c)
+```
+
+Correct, with female as "reference level".
+
+```{r eval = FALSE}
+gender_mdl <- brm(number | vint(set_size) ~ 1 +
+                    movement_c + gender_c + 
+                    movement_c:gender_c +
+                    (1 + movement_c|id),
+                
+                # Params:
+                
+                data = df,
+                family = beta_binomial2,
+                stanvars = stanvars,
+                
+                # MCMC settings:
+                    
+                cores = 4, init = 0, control = mcmc_controls,
+                warmup = 3000, iter = 5000, chains = 4)
+
+# Save:
+
+save(gender_mdl,
+     file = '../models/gender_mdl.RData')
+```
+
+Load the model for the markdown (the actual code chunks have been set to `eval = FALSE` as the models are precompiled).
+
+```{r, eval = TRUE}
+load('../models/gender_mdl.RData')
+```
+
+Check model:
+
+```{r}
+gender_mdl
+```
+
+Test main hypothesis:
+
+```{r}
+hypothesis(gender_mdl, 'movement_c1 > 0')
+hypothesis(gender_mdl, 'gender_c1 > 0') # nothing
+hypothesis(gender_mdl, 'movement_c1:gender_c1 > 0')
+```
+
+84% certain that men have a larger number on outwards gestures. Not sufficient evidence however.
+
+# Individual differences
+
+## Distribution of BAG and SNS
+
+We'll look at BAG and SNS in relation to magnitude difference between conditions. Let's use the already extant `df_ppt_wide` from above for this, since we have the difference scores already in there. We just need to re-append the `BAG` and `SNS` data.
+
+```{r}
+df_ppt_wide <- left_join(df_ppt_wide,
+                         distinct(select(df, id, BAG, SNS)))
+```
+
+Have a look at the distribution of the BAG scale:
+
+```{r}
+df_ppt_wide |> 
+  ggplot(aes(x = BAG)) +
+  geom_density(fill = 'purple') +
+  theme_classic()
+```
+
+Nothing too noteworthy.
+
+```{r}
+df_ppt_wide |> 
+  ggplot(aes(x = SNS)) +
+  geom_density(fill = 'purple') +
+  theme_classic()
+```
+
+Similarly unremarkable.
+
+Let's also look at whether the BAG or SNS scales are different for English and Italian.
+
+```{r}
+# Gesture scale:
+
+df_ppt_wide |> 
+  group_by(language) |> 
+  summarize(M = mean(BAG),
+            sd = sd(BAG))
+
+# Numeracy scale:
+
+df_ppt_wide |> 
+  group_by(language) |> 
+  summarize(M = mean(SNS),
+            sd = sd(SNS))
+```
+
+No big differences.
+
+Are `BAG` and `SNS` correlated?
+
+```{r}
+with(df_ppt_wide, cor.test(BAG, SNS, method = 'pearson'))
+with(df_ppt_wide, cor.test(BAG, SNS, method = 'spearman'))
+```
+
+They are weakly negatively correlated. People who gesture more self-report to have less numeracy. But let's not get too excited about this, it's a weak correlation!
+
+## Simple correlations
+
+Perform correlations:
+
+```{r}
+# Difference score with BAG:
+
+with(df_ppt_wide,
+     cor.test(diff, BAG, method = 'pearson'))
+with(df_ppt_wide,
+     cor.test(diff, BAG, method = 'spearman'))
+
+# Difference score with SNS:
+
+with(df_ppt_wide,
+     cor.test(diff, SNS, method = 'pearson'))
+with(df_ppt_wide,
+     cor.test(diff, SNS, method = 'spearman'))
+```
+
+All correlations are really small in size.
+
+Let's explore to what extent they are driven by the extreme cases, the two participants with really large effects:
+
+```{r}
+# Difference score with BAG:
+
+with(filter(df_ppt_wide, !id %in% extreme_cases),
+     cor.test(diff, BAG, method = 'pearson'))
+with(filter(df_ppt_wide, !id %in% extreme_cases),
+     cor.test(diff, BAG, method = 'spearman'))
+
+# Difference score with SNS:
+
+with(filter(df_ppt_wide, !id %in% extreme_cases),
+     cor.test(diff, SNS, method = 'pearson'))
+with(filter(df_ppt_wide, !id %in% extreme_cases),
+     cor.test(diff, SNS, method = 'spearman'))
+```
+
+## Scatterplots
+
+Make a scatter plot for BAG scale:
+
+```{r}
+# Plot basics:
+
+BAG_p <- df_ppt_wide |> 
+  ggplot(aes(x = BAG, y = diff)) +
+  geom_hline(yintercept = 0, linetype = 'dashed') +
+  geom_point(aes(fill = language),
+             alpha = 0.8,
+             shape = 21,
+             col = 'black',
+             size = 2)
+
+# Axes and scales:
+
+BAG_p <- BAG_p +
+  scale_x_continuous(limits = c(2, 5),
+                     breaks = 2:5) +
+  scale_y_continuous(limits = c(-4, 12),
+                     breaks = seq(-4, 12, 2)) +
+  scale_fill_manual(values = c('purple', 'goldenrod3')) +
+  xlab('BAG scale') +
+  ylab('Outwards - inwards difference')
+
+# Cosmetics:
+
+BAG_p <- BAG_p +
+  theme_classic() +
+  theme(axis.title.y = element_text(face = 'bold', size = 12,
+                                    margin = margin(r = 10)),
+        axis.title.x = element_text(face = 'bold', size = 12,
+                                    margin = margin(t = 10)),
+        legend.position = 'bottom')
+
+# Show and save:
+
+BAG_p
+ggsave(plot = BAG_p,
+       file = '../figures/BAG_scatterplot.pdf',
+       width = 5.4, height = 4.5)
+```
+
+Make a scatter plot for SNS scale:
+
+```{r}
+# Plot basics:
+
+SNS_p <- df_ppt_wide |> 
+  ggplot(aes(x = SNS, y = diff)) +
+  geom_hline(yintercept = 0, linetype = 'dashed') +
+  geom_point(aes(fill = language),
+             alpha = 0.8,
+             shape = 21,
+             col = 'black',
+             size = 2)
+
+# Axes and scales:
+
+SNS_p <- SNS_p +
+  scale_x_continuous(limits = c(1, 6),
+                     breaks = 1:6) +
+  scale_y_continuous(limits = c(-4, 12),
+                     breaks = seq(-4, 12, 2)) +
+  scale_fill_manual(values = c('purple', 'goldenrod3')) +
+  xlab('SNS scale') +
+  ylab('Outwards - inwards difference')
+
+# Cosmetics:
+
+SNS_p <- SNS_p +
+  theme_classic() +
+  theme(axis.title.y = element_text(face = 'bold', size = 12,
+                                    margin = margin(r = 10)),
+        axis.title.x = element_text(face = 'bold', size = 12,
+                                    margin = margin(t = 10)),
+        legend.position = 'bottom')
+
+# Show and save:
+
+SNS_p
+ggsave(plot = SNS_p,
+       file = '../figures/SNS_scatterplot.pdf',
+       width = 5.4, height = 4.5)
+```
+
+There doesn't seem to be anything going on with the individual differences, even if that one extreme value were excluded.
+
+Put both together into a double plot with `patchwork`. For the second plot, we don't need to repeat the y-axis, so we can switch that off. And we can get rid of the legend for that as well and change the legend position for the BAG plot.
+
+```{r}
+# Changes to plot for double plot:
+
+BAG_p <- BAG_p +
+  theme(legend.position = 'none')
+SNS_p <- SNS_p +
+  ylab(NULL) +
+  theme(legend.position = 'none')
+
+# Patch together:
+
+double_p <- BAG_p + SNS_p
+
+# Show and save:
+
+double_p
+ggsave(plot = double_p,
+       file = '../figures/double_plot.pdf',
+       width = 8, height = 3.5)
+```
+
+## Model with BAG interaction
+
+To test for the interaction of `BAG` and `SNS`, let's center them for more interpretable regression coefficients.
+
+```{r}
+df <- mutate(df,
+             BAG_c = BAG - mean(BAG, na.rm = TRUE),
+             BAG_c = BAG_c / sd(BAG_c),
+             
+             SNS_c = SNS - mean(SNS, na.rm = TRUE),
+             SNS_c = SNS_c / sd(SNS_c))
+
+# Check:
+
+df
+```
+
+Looks good. Now the model with the interaction. We'll leave `movement` treatment coded as that's easily interpretable anyway given it's only two levels.
+
+Now, run the model:
+
+```{r, eval = FALSE}
+BAG_mdl <- brm(number | vint(set_size) ~ 1 +
+                 movement + BAG_c +
+                 movement:BAG_c +
+                 (1 + movement_c|id),
+                data = df,
+                family = beta_binomial2,
+                stanvars = stanvars,
+                
+                # MCMC settings:
+                    
+                cores = 4, init = 0, control = mcmc_controls,
+                warmup = 3000, iter = 5000, chains = 4)
+
+# Save:
+
+save(BAG_mdl,
+     file = '../models/BAG_mdl.RData')
+```
+
+Load the model for the markdown (the actual code chunks have been set to `eval = FALSE` as the models are precompiled).
+
+```{r, eval = TRUE}
+load('../models/BAG_mdl.RData')
+```
+
+Show:
+
+```{r}
+BAG_mdl
+```
+
+Assess the interaction:
+
+```{r}
+hypothesis(BAG_mdl, 'movementoutwards:BAG_c > 0')
+```
+
+95% certain that the interaction has this sign. Specifically, people who self-report to gesture more say larger numbers when moving the hands outwards.
+
+## Model with SNS interaction
+
+Now, run the model:
+
+```{r, eval = FALSE}
+SNS_mdl <- brm(number | vint(set_size) ~ 1 +
+                 movement + SNS_c +
+                 movement:SNS_c +
+                 (1 + movement_c|id),
+                data = df,
+                family = beta_binomial2,
+                stanvars = stanvars,
+                
+                # MCMC settings:
+                    
+                cores = 4, init = 0, control = mcmc_controls,
+                warmup = 3000, iter = 5000, chains = 4)
+
+# Save:
+
+save(SNS_mdl,
+     file = '../models/SNS_mdl.RData')
+```
+
+Load the model for the markdown (the actual code chunks have been set to `eval = FALSE` as the models are precompiled).
+
+```{r, eval = TRUE}
+load('../models/SNS_mdl.RData')
+```
+
+Show:
+
+```{r}
+SNS_mdl
+```
+
+Assess the interaction:
+
+```{r}
+hypothesis(SNS_mdl, 'movementoutwards:SNS_c < 0')
+```
+
+94% certain that this effect goes in the same direction. The sign of the interaction is negative, which means that more numerate people have a smaller effect.
+
+## Repeat models without extreme cases
+
+These individual difference analyses could be quite susceptible to the two participants with very large effects, which potentially have a lot of leverage on the coefficients of the model. So let's see what happens if we repeat the analyses without just these two.
+
+
+```{r, eval = FALSE}
+BAG_excl_mdl <- brm(number | vint(set_size) ~ 1 +
+                      movement + BAG_c +
+                      movement:BAG_c +
+                      (1 + movement_c|id),
+                    
+                    # Exclude extreme cases:
+                    
+                    data = filter(df, !(id %in% extreme_cases)),
+                    family = beta_binomial2,
+                    stanvars = stanvars,
+                
+                    # MCMC settings:
+                    
+                    cores = 4, init = 0, control = mcmc_controls,
+                    warmup = 3000, iter = 5000, chains = 4)
+
+# Save:
+
+save(BAG_excl_mdl,
+     file = '../models/BAG_excl_mdl.RData')
+```
+
+Load:
+
+```{r}
+load('../models/BAG_excl_mdl.RData')
+```
+
+SNS without extreme cases:
+
+```{r, eval = FALSE}
+SNS_excl_mdl <- brm(number | vint(set_size) ~ 1 +
+                      movement + SNS_c +
+                      movement:SNS_c +
+                      (1 + movement_c|id),
+               
+                    # Exclude extreme cases:
+               
+                    data = filter(df, !(id %in% extreme_cases)),
+               
+                    # Params:
+               
+                    family = beta_binomial2,
+                    stanvars = stanvars,
+                
+                    # MCMC settings:
+                    
+                    cores = 4, init = 0, control = mcmc_controls,
+                    warmup = 3000, iter = 5000, chains = 4)
+
+# Save:
+
+save(SNS_excl_mdl,
+     file = '../models/SNS_excl_mdl.RData')
+```
+
+Load:
+
+```{r}
+load('../models/SNS_excl_mdl.RData')
+```
+
+Show models:
+
+```{r}
+BAG_excl_mdl
+SNS_excl_mdl
+```
+
+Check hypotheses of interaciton effects:
+
+```{r}
+hypothesis(BAG_excl_mdl, 'movementoutwards:BAG_c > 0')
+hypothesis(SNS_excl_mdl, 'movementoutwards:SNS_c < 0')
+```
+
+The BAG interaction effect drops to unacceptable levels of uncertainty. There's still an 81% chance the effect is of the same sign, but that's not a lot given conventional standards of evidence. The SNS interaction effect survives the exclusions a bit better.
+
+# Relative difference
+
+## Compute relative differences
+
+First, we need to compute the relative differences.
+
+Create a version of the tibble that contains the relative change, whether it goes up or down. This should be done on a participant by participant basis, so that we don't calculate the relative change when adjacent rows have data from different participants. If consecutive rows are `NA`, then the corresponding relative differences will also be `NA`.
+
+```{r}
+# Vector of participants:
+
+all_ppts <- unique(df$id)
+
+# Create empty results object to be filled in loop:
+
+diff_df <- c()
+
+# Loop through:
+
+for (i in seq_along(all_ppts)) {
+  
+  # Extract subset tibble that only contains ith participant:
+  
+  this_df <- filter(df, id == all_ppts[i])
+  this_diff_df <- tibble(rel_change = diff(this_df$number))
+  this_diff_df$id <- all_ppts[i]
+  this_diff_df$movement_towards <- this_df[-1, ]$movement
+  
+  # Merge:
+  
+  diff_df <- bind_rows(diff_df, this_diff_df)
+}
+
+# Check:
+
+diff_df
+```
+
+## Descriptive statistics
+
+Classify changes as going up or down in a categorical manner. This will be in the new column `rel_change_cat`, with the name indicating 'relative change categorical':
+
+```{r}
+diff_df <- mutate(diff_df,
+                  rel_change_cat = if_else(rel_change > 0,
+                                           'up', 'down'))
+```
+
+Check how many go up or down:
+
+```{r}
+diff_df |> 
+  count(movement_towards, rel_change_cat) |> 
+  filter(!is.na(rel_change_cat)) |> 
+  group_by(movement_towards) |> 
+  mutate(p = n / sum(n),
+         p = round(p * 100, 1),
+         p = str_c(p, '%'))
+```
+
+## Bar plot of relative differences
+
+Make a plot of this:
+
+```{r}
+# Plot basics:
+
+diff_p <- diff_df |> 
+  count(movement_towards, rel_change_cat) |> 
+  filter(!is.na(rel_change_cat)) |> 
+  group_by(movement_towards) |> 
+  mutate(p = n / sum(n)) |> 
+  rename(`Relative change` = rel_change_cat) |> 
+  ggplot(aes(x = movement_towards,
+             fill = `Relative change`, y = p)) +
+  geom_col(position = 'dodge',
+           col = 'black',
+           width = 0.7)
+
+# Axes and labels:
+
+diff_p <- diff_p +
+  scale_y_continuous(expand = c(0, 0),
+                     limits = c(0, 0.8),
+                     breaks = seq(0, 0.8, 0.2)) +
+  scale_fill_manual(values = c('steelblue', 'goldenrod3')) +
+  xlab(NULL) +
+  ylab('Proportion')
+
+# Cosmetics:
+
+diff_p <- diff_p +
+  theme_classic() +
+  theme(legend.position = 'top',
+        axis.title.y = element_text(margin = margin(r = 15),
+                                    face = 'bold'),
+        axis.title.x = element_text(face = 'bold'))
+
+# Show and save:
+
+diff_p
+ggsave(plot = diff_p,
+       file = '../figures/up_down_barplot.pdf',
+       width = 3.5, height = 3.5)
+```
+
+**BANANA: Bodo: Maybe later make this into a publication-ready plot? Not a priority right now.**
+
+Look at how many times does it go up or down as a function of the `movement_towards` factor:
+
+```{r}
+diff_df |> 
+  count(movement_towards, rel_change_cat) |> 
+  filter(!is.na(rel_change_cat)) |> 
+  group_by(movement_towards) |> 
+  mutate(prop = n / sum(n),
+         prop = round(prop, 2),
+         percentage = str_c(prop * 100, '%'))
+```
+
+Quick-and-dirty bar plot of this:
+
+```{r}
+# 
+
+diff_df |> 
+  count(movement_towards, rel_change_cat) |> 
+  filter(!is.na(rel_change_cat)) |> 
+  group_by(movement_towards) |> 
+  mutate(prop = n / sum(n),
+         prop = round(prop, 2),
+         percentage = str_c(prop * 100, '%')) |> 
+  ggplot(aes(x = movement_towards, fill = rel_change_cat,
+             y = prop)) +
+  geom_col(position = 'dodge') +
+  theme_classic()
+```
+
+## Logistic regression: main model
+
+To model this, we need a new weakly informative prior adapted for logistic regression coefficients. Here, we'll simply follow the advice by Gelman et al. (2008) to use a Cauchy prior centered at zero with scale = 2.5.
+
+```{r}
+logistic_priors <- c(prior(cauchy(0, 2.5), class = b))
+```
+
+For the logistic regression model, we need to code things as a factor or numeric variable:
+
+```{r}
+diff_df <- mutate(diff_df,
+                  rel_change_cat = factor(rel_change_cat,
+                                          levels = c('down', 'up')))
+```
+
+Create a logistic regression model for this:
+
+```{r eval = FALSE}
+relative_mdl <- brm(rel_change_cat ~ 1 +
+                      movement_towards +
+                      (1 + movement_towards|id), 
+                    # Other settings:
+                    
+                    data = diff_df,
+                    family = bernoulli,
+                    prior = logistic_priors,
+                
+                    # MCMC settings:
+                    
+                    cores = 4, init = 0, control = mcmc_controls,
+                    warmup = 3000, iter = 5000, chains = 4)
+
+# Save:
+
+save(relative_mdl,
+     file = '../models/relative_mdl.RData')
+```
+
+Load:
+
+```{r eval = TRUE}
+load('../models/relative_mdl.RData')
+```
+
+Posterior predictive checks:
+
+```{r}
+pp_check(relative_mdl, ndraws = 100)
+```
+
+Show the model:
+
+```{r}
+relative_mdl
+```
+
+Test hypothesis:
+
+```{r}
+hypothesis(relative_mdl, 'movement_towardsoutwards > 0')
+```
+
+Nice.
+
+How much variance does this model describe?
+
+```{r}
+bayes_R2(relative_mdl)
+```
+
+Very small amount.
+
+## Language interaction
+
+We also want to assess here whether language played a role. So let's build the model with the interaction. For this, we need to first re-establish language column for this dataset:
+
+```{r}
+diff_df <- mutate(diff_df,
+                  language = str_split(id, '_', simplify = TRUE)[, 1])
+```
+
+Contrast code this (sum coding) for more interpretable coefficients:
+
+```{r}
+# Make into factor:
+
+diff_df <- mutate(diff_df,
+             movement_towards_c = factor(movement_towards, levels = c('outwards', 'inwards')),
+             language_c = factor(language, levels = c('italian', 'english')))
+
+# Sum-code:
+
+contrasts(diff_df$movement_towards_c) <- contr.sum(2)
+contrasts(diff_df$language_c) <- contr.sum(2)
+
+# Check:
+
+contrasts(diff_df$movement_towards_c)
+contrasts(diff_df$language_c)
+```
+
+Then run the model with the interaction:
+
+```{r eval = FALSE}
+# Refit the model:
+
+relative_interaction_mdl <- brm(rel_change_cat ~ 1 +
+                                  language_c +
+                                  movement_towards_c +
+                                  language_c:movement_towards_c +
+                                  (1 + movement_towards_c|id), 
+                    # Other settings:
+                    
+                    data = diff_df,
+                    family = bernoulli,
+                    prior = logistic_priors,
+                
+                    # MCMC settings:
+                    
+                    cores = 4, init = 0, control = mcmc_controls,
+                    warmup = 3000, iter = 5000, chains = 4)
+
+# Save:
+
+save(relative_interaction_mdl,
+     file = '../models/relative_interaction_mdl.RData')
+```
+
+Load:
+
+```{r eval = TRUE}
+load('../models/relative_interaction_mdl.RData')
+```
+
+Show:
+
+```{r}
+relative_interaction_mdl
+```
+
+Assess interaction with posterior:
+
+```{r}
+hypothesis(relative_interaction_mdl,
+           'language_c1 > 0')
+hypothesis(relative_interaction_mdl,
+           'movement_towards_c1 > 0')
+hypothesis(relative_interaction_mdl,
+           'language_c1:movement_towards_c1 < 0')
+```
+
+Nothing much going on here for the interaction, but highly certain gesture effect and relatively more uncertain language effect. How certain are we in the gesture effect being larger than the language effect?
+
+```{r}
+hypothesis(relative_interaction_mdl,
+           'movement_towards_c1 > language_c1')
+```
+
+99% certain.
+
+Get all the posterior values for the three fixed effects coefficients:
+
+```{r}
+group_posts <- as_draws_df(relative_interaction_mdl) |> 
+  select(b_language_c1:`b_language_c1:movement_towards_c1`) |> 
+  pivot_longer(b_language_c1:`b_language_c1:movement_towards_c1`,
+               values_to = 'estimate',
+               names_to = 'coefficient') |> 
+  mutate(coefficient = if_else(coefficient == 'b_movement_towards_c1',
+                               'gesture effect', coefficient),
+         coefficient = if_else(coefficient == 'b_language_c1',
+                               'language effect', coefficient),
+         coefficient = if_else(coefficient == 'b_language_c1:movement_towards_c1',
+                               'gesture * language interaction', coefficient))
+
+# Show:
+
+group_posts
+```
+
+Create a density plot of the three fixed effects.
+
+```{r}
+# Order of levels:
+
+fac_order <- c('gesture effect', 'language effect',
+               'gesture * language interaction')
+
+# Plot basics:
+
+diff_p <- group_posts |> 
+  mutate(coefficient = factor(coefficient, levels = fac_order)) |> 
+  ggplot(aes(x = estimate)) +
+  facet_wrap(~coefficient, nrow = 3) +
+  geom_density(fill = 'purple')
+
+# Axes and labels:
+
+diff_p <- diff_p +
+  geom_vline(xintercept = 0, linetype = 'dashed') +
+  scale_x_continuous(limits = c(-0.15, 0.25),
+                     breaks = seq(-0.15, 0.25, 0.05),
+                     labels = round(seq(-0.15, 0.25, 0.05), 2)) +
+  scale_y_continuous(limits = c(0, 40),
+                     breaks = seq(0, 40, 10)) +
+  xlab('Posterior value (log odds)') +
+  ylab('Density')
+
+# Cosmetics:
+
+diff_p <- diff_p +
+  theme_classic() +
+  theme(axis.title.y = element_text(margin = margin(r = 10),
+                                    size = 12),
+        axis.title.x = element_text(face = 'bold', size = 12,
+                                    margin = margin(t = 10)),
+        strip.background = element_rect(fill = 'grey'))
+
+# Show and save:
+
+diff_p
+ggsave(plot = diff_p,
+       file = '../figures/group_mdl_posterior_effect_relative_difference.pdf',
+       width = 4, height = 6.5)
+```
+
+## Model with BAG interaction
+
+We need to merge the `SNS` and `BAG` scales back into the new tibble with the relative changes.
+
+```{r}
+diff_df <- left_join(diff_df,
+                     distinct(df, id, BAG_c, SNS_c))
+```
+
+The model with the BAG interaction:
+
+```{r eval = FALSE}
+# Refit the model:
+
+relative_BAG_mdl <- brm(rel_change_cat ~ 1 +
+                          BAG_c +
+                          movement_towards_c +
+                          BAG_c:movement_towards_c +
+                          (1 + movement_towards_c|id),
+                    
+                        # Other settings:
+                    
+                        data = diff_df,
+                        family = bernoulli,
+                        prior = logistic_priors,
+                        
+                        # MCMC settings:
+                    
+                        cores = 4, init = 0, control = mcmc_controls,
+                        warmup = 3000, iter = 5000, chains = 4)
+
+# Save:
+
+save(relative_BAG_mdl,
+     file = '../models/relative_BAG_mdl.RData')
+```
+
+Load:
+
+```{r eval = TRUE}
+load('../models/relative_BAG_mdl.RData')
+```
+
+Show the model:
+
+```{r}
+relative_BAG_mdl
+```
+
+Assess interaction with posterior:
+
+```{r}
+hypothesis(relative_BAG_mdl,
+           'BAG_c:movement_towards_c1 > 0')
+```
+
+## Model with SNS interaction
+
+Model with the SNS interaction:
+
+```{r eval = FALSE}
+# Refit the model:
+
+relative_SNS_mdl <- brm(rel_change_cat ~ 1 +
+                          SNS_c +
+                          movement_towards_c +
+                          SNS_c:movement_towards_c +
+                          (1 + movement_towards_c|id),
+                    
+                        # Other settings:
+                    
+                        data = diff_df,
+                        family = bernoulli,
+                        prior = logistic_priors,
+                        
+                        # MCMC settings:
+                    
+                        cores = 4, init = 0, control = mcmc_controls,
+                        warmup = 3000, iter = 5000, chains = 4)
+
+# Save:
+
+save(relative_SNS_mdl,
+     file = '../models/relative_SNS_mdl.RData')
+```
+
+Load:
+
+```{r eval = TRUE}
+load('../models/relative_SNS_mdl.RData')
+```
+
+Show the model:
+
+```{r}
+relative_SNS_mdl
+```
+
+Assess interaction with posterior:
+
+```{r}
+hypothesis(relative_SNS_mdl,
+           'SNS_c:movement_towards_c1 < 0')
+```
+
+## Simple correlations for individual differences
+
+Let's look at the proportion of outwards trials that are "up" and correlate that (Spearman's rho) with the BAG and SNS scores, in analogy to the simple correlation analysis for the absolute magnitude analysis.
+
+```{r}
+prop_df <- diff_df |>
+  count(id, movement_towards, rel_change_cat) |> 
+  filter(!is.na(rel_change_cat)) |> 
+  filter(movement_towards == 'outwards') |> 
+  group_by(id) |> 
+  mutate(p = n / sum(n)) |> 
+  filter(rel_change_cat == 'up')
+
+# Merge BAG and SNS back in there:
+
+prop_df <- left_join(prop_df,
+                     select(df_ppt_wide, id, BAG, SNS))
+```
+
+Perform correlations:
+
+```{r}
+# Difference score with BAG:
+
+with(prop_df,
+     cor.test(p, BAG, method = 'spearman'))
+
+# Difference score with SNS:
+
+with(prop_df,
+     cor.test(p, SNS, method = 'spearman'))
+```
+
+
+# Other explorations
+
+In this section, we'll look at three other things in this data:
+
+1) the first trial
+2) the values 1 and 30 in particular
+3) the impact of individual numbers
+4) exploration of a possible MARC effect
+
+Analyses 1) and 2) in particular are motivated post-hoc based on the fact that during data collection, we noticed that participants generated a high number of "1" or "30" responses on the first trial. We wanted to ensure that our results are not exclusively driven by the first trial, i.e., the same average result is found even if this is excluded, and even if the numbers 1 and 30 are excluded.
+
+Analysis 3) is important as it could be possible that a subset of numbers are driving the effect.
+
+Analysis 4) looks at the possibility of a MARC effect in this data where even numbers may be more likely for either outwards or inwards movements, but probably outwards, which would be a parity correspondence if we assume that outwards is easier and more normal than inwards.
+
+## Start number
+
+Let's look at what numbers are most often said on the first trial:
+
+```{r}
+df |> 
+  filter(trial == 1) |> 
+  count(number, sort = TRUE)
+```
+
+As can be seen, the number 1 was most frequently said on the first trial.
+
+How does this differ by starting position?
+
+```{r}
+df |> 
+  filter(trial == 1) |> 
+  count(start_position, number, sort = TRUE)
+```
+
+Let's look at what the results would be in the average without the first trial:
+
+```{r}
+df |> 
+  filter(trial != 1) |> 
+  group_by(movement) |> 
+  summarize(M = mean(number, na.rm = TRUE),
+            SD = sd(number, na.rm = TRUE))
+```
+
+Same, which is re-assuring!
+
+Let's look at *only* the first trial, to see whether the effect is already there:
+
+```{r}
+df |> 
+  filter(trial == 1) |> 
+  group_by(movement) |> 
+  summarize(M = mean(number, na.rm = TRUE),
+            SD = sd(number, na.rm = TRUE))
+
+```
+
+## Numbers 1 and 30
+
+Let's look at how often the numbers 1 and 30 were said with outwards and inwards:
+
+```{r}
+df |> 
+  filter(number %in% c(1, 30)) |> 
+  count(number, movement) |> 
+  mutate(p = n / sum(n))
+```
+
+This is reassuring. *Despite* 1 and outwards having an edge because of the first trial, it's overall going in the right direction in that there are quite a few more 30 responses for outwards.
+
+Let's incorporate trial into the picture, with a variable that codes for first trial versus all other trials:
+
+```{r}
+trial_range_tab <- df |> 
+  mutate(trial = if_else(trial == 1,
+                         'first trial', 'later trials')) |> 
+  filter(number %in% c(1, 30)) |> 
+  count(trial, number, movement) |> 
+  group_by(trial, movement) |> 
+  mutate(p = n / sum(n))
+
+# Show:
+
+trial_range_tab
+```
+
+Let's look at the results without the numbers 1 and 30:
+
+```{r}
+df |> 
+  filter(!number %in% c(1, 30)) |> 
+  group_by(movement) |> 
+  summarize(M = mean(number, na.rm = TRUE),
+            SD = sd(number, na.rm = TRUE))
+```
+
+## Individual numbers
+
+Count the number of cases for each number, separately for each movement:
+
+```{r}
+# Plot basics:
+
+bar_p <- df |>
+  count(movement, number) |> 
+  filter(!is.na(number)) |> 
+  ggplot(aes(x = factor(number), y = n, fill = movement)) +
+  geom_col(position = 'dodge',
+           width = 0.6)
+
+# Axes and labels:
+
+bar_p <- bar_p +
+  xlab(NULL) +
+  ylab('Count') +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_fill_manual(values = c('goldenrod3', 'steelblue'))
+
+# Cosmetics:
+
+bar_p <- bar_p +
+  theme_classic() +
+  theme(legend.position = 'top',
+        legend.title = element_blank())
+
+# Show and save:
+
+bar_p
+ggsave(plot = bar_p,
+       file = '../figures/barplot.pdf',
+       width = 10.5, height = 4.5)
+```
+
+Another way of looking at this is to compute the proportion of cases for inwards and outwards, with stacked bar plots.
+
+```{r}
+# Plot basics:
+
+bar_p <- df |>
+  count(movement, number) |> 
+  filter(!is.na(number)) |> 
+  group_by(number) |> 
+  mutate(p = n / sum(n)) |> 
+  ggplot(aes(x = factor(number), y = p, fill = movement)) +
+  geom_col(width = 0.6)
+
+# Axes and labels:
+
+bar_p <- bar_p +
+  xlab(NULL) +
+  ylab('Count') +
+  geom_hline(yintercept = 0.5, linetype = 'dashed') +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_fill_manual(values = c('goldenrod3', 'steelblue'))
+
+# Cosmetics:
+
+bar_p <- bar_p +
+  theme_classic() +
+  theme(legend.position = 'top',
+        legend.title = element_blank())
+
+# Show and save:
+
+bar_p
+ggsave(plot = bar_p,
+       file = '../figures/stacked_barplot.pdf',
+       width = 10.5, height = 4.5)
+```
+
+Get the table of percentage differences outwards - inwards for each number.
+
+```{r}
+num_df <- df |>
+  count(movement, number) |> 
+  filter(!is.na(number)) |> 
+  group_by(number) |> 
+  mutate(p = n / sum(n)) |> 
+  filter(movement == 'outwards') |> 
+  select(-movement)
+
+# Show:
+
+num_df |> 
+  print(n = Inf)
+```
+
+We can perform a correlation of this (non-parametric) as a quick-and-dirty double-check of the correlation of "% outwards" and numerical magnitude.
+
+```{r}
+with(num_df,
+     cor.test(number, p, method = 'spearman'))
+```
+
+Quite strongly correlated. Comforting to know!
+
+What about this plot idea?
+
+```{r}
+# Plot basics:
+
+dot_p <- num_df |> 
+  ggplot(aes(x = factor(number), y = p)) +
+  geom_segment(aes(xend = factor(number), y = 0.5, yend = p),
+               col = 'gray') +
+  geom_point()
+
+# Axes and labels:
+
+dot_p <- dot_p +
+  xlab(NULL) +
+  ylab('Percentage point difference\n(outwards - inwards)') +
+  geom_hline(yintercept = 0.5, linetype = 'dashed') +
+  scale_y_continuous(expand = c(0, 0),
+                     limits = c(0.4, 0.6),
+                     breaks = seq(0.4, 0.6, 0.05),
+                     labels = str_c(seq(40, 60, 5), '%')) +
+  scale_fill_manual(values = c('goldenrod3', 'steelblue'))
+
+# Cosmetics:
+
+dot_p <- dot_p +
+  theme_classic() +
+  theme(legend.position = 'top',
+        legend.title = element_blank(),
+        axis.title.y = element_text(face = 'bold',
+                                    margin = margin(r = 12)),
+        axis.text.x = element_text(size = 10),
+        axis.text.y = element_text(size = 10))
+
+# Show and save:
+
+dot_p
+ggsave(plot = dot_p,
+       file = '../figures/number_dot_plot.pdf',
+       width = 10.5, height = 4.5)
+```
+
+## MARC effect
+
+Code for odd versus even numbers and make it into a factor for a logistic regression model:
+
+```{r}
+df <- mutate(df,
+             parity = if_else(number %% 2 == 0, 'even', 'odd'),
+             parity = factor(parity, levels = c('odd', 'even')))
+```
+
+Check descriptive proportions:
+
+```{r}
+df |> 
+  filter(!is.na(parity)) |> 
+  count(movement, parity) |> 
+  group_by(movement) |> 
+  mutate(prop = n / sum(n))
+```
+
+Pretty much nothing.
+
+Build a logistic regression model for this:
+
+```{r, eval = FALSE}
+MARC_mdl <- brm(parity ~ 1 +
+                  movement +
+                  (1 + movement|id),
+                
+                # Params:
+                
+                data = df,
+                family = bernoulli,
+                stanvars = stanvars,
+                
+                # MCMC settings:
+                    
+                cores = 4, init = 0, control = mcmc_controls,
+                warmup = 3000, iter = 5000, chains = 4)
+
+# Save:
+
+save(MARC_mdl,
+     file = '../models/MARC_mdl.RData')
+```
+
+Load the model for the markdown (the actual code chunks have been set to `eval = FALSE` as the models are precompiled).
+
+```{r, eval = TRUE}
+load('../models/MARC_mdl.RData')
+```
+
+Check model:
+
+```{r}
+MARC_mdl
+```
+
+Test main hypothesis:
+
+```{r}
+hypothesis(MARC_mdl, 'movementoutwards < 0')
+```
+
+Not much going on. Although we can be 83% certain that for outwards gestures, there's on average more odd responses.
+
+# Concluding remarks
+
+Overall, we seem to have a reliable gesture effect that emerges under a number of different analysis approaches, using absolute magnitudes in a mixed model or relative changes in a logistic regression model. The effect also emerges under some simple NHST analyses. However, it absolutely has to be emphasized that this is clearly a very small effect overall, as revealed through the descriptive averages, Cohen's d, and the fact that in at least one of the analyses, the expected variation due to gesture does not even exceed the completley unexpected variation due to speaking group.
+
+In terms of individual differences, there are very very very weak effects that only emerge under certain analyses approaches. The correlations with SNS or BAG are barely worth mentioning in terms of their magnitude. Here, we conclude that the two particular individual difference measures we decided to look at do not matter much for this phenomenon.
+
+This completes this analysis.
