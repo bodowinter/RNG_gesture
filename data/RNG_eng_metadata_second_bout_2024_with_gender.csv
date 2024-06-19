@@ -1,0 +1,721 @@
+﻿id,item,question,score,gender
+P01,BAG1,I usually gesture a lot when I talk to make my self understood better.,4,female
+P01,BAG2,I like talking to people who gesture a lot when they talk.,4,female
+P01,BAG3,I've better told before that I gesture a lot when I talk.,3,female
+P01,BAG4,I find it more difficult to understand actors when they gesture a lot.,3,female
+P01,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",4,female
+P01,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,2,female
+P01,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,3,female
+P01,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",4,female
+P01,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",2,female
+P01,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",5,female
+P01,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",1,female
+P01,BAG12,I like having my hands free when I have a discussion with someone.,4,female
+P01,NUM1,How good are you at working with fractions?,NA,female
+P01,NUM2,How good are you at working with percentages?,NA,female
+P01,NUM3,How good are you at calculating a 15% tip?,NA,female
+P01,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,NA,female
+P01,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",NA,female
+P01,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",NA,female
+P01,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",NA,female
+P01,NUM8,How often do you find numerical information to be useful?,NA,female
+P02,BAG1,I usually gesture a lot when I talk to make my self understood better.,3,female
+P02,BAG2,I like talking to people who gesture a lot when they talk.,5,female
+P02,BAG3,I've better told before that I gesture a lot when I talk.,2,female
+P02,BAG4,I find it more difficult to understand actors when they gesture a lot.,1,female
+P02,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",5,female
+P02,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,2,female
+P02,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,2,female
+P02,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",5,female
+P02,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",2,female
+P02,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",3,female
+P02,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",2,female
+P02,BAG12,I like having my hands free when I have a discussion with someone.,4,female
+P02,NUM1,How good are you at working with fractions?,4,female
+P02,NUM2,How good are you at working with percentages?,5,female
+P02,NUM3,How good are you at calculating a 15% tip?,4,female
+P02,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,5,female
+P02,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",5,female
+P02,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",2,female
+P02,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",3,female
+P02,NUM8,How often do you find numerical information to be useful?,6,female
+P03,BAG1,I usually gesture a lot when I talk to make my self understood better.,4,female
+P03,BAG2,I like talking to people who gesture a lot when they talk.,3,female
+P03,BAG3,I've better told before that I gesture a lot when I talk.,1,female
+P03,BAG4,I find it more difficult to understand actors when they gesture a lot.,3,female
+P03,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",5,female
+P03,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,2,female
+P03,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,2,female
+P03,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",5,female
+P03,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",3,female
+P03,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",2,female
+P03,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",2,female
+P03,BAG12,I like having my hands free when I have a discussion with someone.,4,female
+P03,NUM1,How good are you at working with fractions?,4,female
+P03,NUM2,How good are you at working with percentages?,4,female
+P03,NUM3,How good are you at calculating a 15% tip?,5,female
+P03,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,5,female
+P03,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",5,female
+P03,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",5,female
+P03,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",2,female
+P03,NUM8,How often do you find numerical information to be useful?,4,female
+P04,BAG1,I usually gesture a lot when I talk to make my self understood better.,2,female
+P04,BAG2,I like talking to people who gesture a lot when they talk.,4,female
+P04,BAG3,I've better told before that I gesture a lot when I talk.,2,female
+P04,BAG4,I find it more difficult to understand actors when they gesture a lot.,2,female
+P04,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",3,female
+P04,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,2,female
+P04,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,4,female
+P04,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",4,female
+P04,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",2,female
+P04,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",1,female
+P04,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",4,female
+P04,BAG12,I like having my hands free when I have a discussion with someone.,2,female
+P04,NUM1,How good are you at working with fractions?,2,female
+P04,NUM2,How good are you at working with percentages?,5,female
+P04,NUM3,How good are you at calculating a 15% tip?,5,female
+P04,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,6,female
+P04,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",3,female
+P04,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",6,female
+P04,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",2,female
+P04,NUM8,How often do you find numerical information to be useful?,4,female
+P05,BAG1,I usually gesture a lot when I talk to make my self understood better.,1,female
+P05,BAG2,I like talking to people who gesture a lot when they talk.,3,female
+P05,BAG3,I've better told before that I gesture a lot when I talk.,1,female
+P05,BAG4,I find it more difficult to understand actors when they gesture a lot.,3,female
+P05,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",1,female
+P05,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,2,female
+P05,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,4,female
+P05,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",1,female
+P05,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",2,female
+P05,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",1,female
+P05,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",1,female
+P05,BAG12,I like having my hands free when I have a discussion with someone.,1,female
+P05,NUM1,How good are you at working with fractions?,1,female
+P05,NUM2,How good are you at working with percentages?,2,female
+P05,NUM3,How good are you at calculating a 15% tip?,1,female
+P05,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,2,female
+P05,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",5,female
+P05,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",5,female
+P05,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",2,female
+P05,NUM8,How often do you find numerical information to be useful?,4,female
+P06,BAG1,I usually gesture a lot when I talk to make my self understood better.,5,female
+P06,BAG2,I like talking to people who gesture a lot when they talk.,3,female
+P06,BAG3,I've better told before that I gesture a lot when I talk.,4,female
+P06,BAG4,I find it more difficult to understand actors when they gesture a lot.,1,female
+P06,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",5,female
+P06,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,1,female
+P06,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,3,female
+P06,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",5,female
+P06,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",2,female
+P06,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",4,female
+P06,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",3,female
+P06,BAG12,I like having my hands free when I have a discussion with someone.,3,female
+P06,NUM1,How good are you at working with fractions?,4,female
+P06,NUM2,How good are you at working with percentages?,4,female
+P06,NUM3,How good are you at calculating a 15% tip?,4,female
+P06,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,4,female
+P06,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",3,female
+P06,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",4,female
+P06,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",1,female
+P06,NUM8,How often do you find numerical information to be useful?,5,female
+P07,BAG1,I usually gesture a lot when I talk to make my self understood better.,3,female
+P07,BAG2,I like talking to people who gesture a lot when they talk.,4,female
+P07,BAG3,I've better told before that I gesture a lot when I talk.,2,female
+P07,BAG4,I find it more difficult to understand actors when they gesture a lot.,1,female
+P07,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",3,female
+P07,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,2,female
+P07,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,4,female
+P07,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",4,female
+P07,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",2,female
+P07,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",3,female
+P07,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",1,female
+P07,BAG12,I like having my hands free when I have a discussion with someone.,2,female
+P07,NUM1,How good are you at working with fractions?,4,female
+P07,NUM2,How good are you at working with percentages?,5,female
+P07,NUM3,How good are you at calculating a 15% tip?,5,female
+P07,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,5,female
+P07,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",5,female
+P07,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",4,female
+P07,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",2,female
+P07,NUM8,How often do you find numerical information to be useful?,4,female
+P08,BAG1,I usually gesture a lot when I talk to make my self understood better.,5,male
+P08,BAG2,I like talking to people who gesture a lot when they talk.,5,male
+P08,BAG3,I've better told before that I gesture a lot when I talk.,3,male
+P08,BAG4,I find it more difficult to understand actors when they gesture a lot.,1,male
+P08,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",4,male
+P08,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,1,male
+P08,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,5,male
+P08,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",5,male
+P08,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",2,male
+P08,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",5,male
+P08,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",1,male
+P08,BAG12,I like having my hands free when I have a discussion with someone.,5,male
+P08,NUM1,How good are you at working with fractions?,5,male
+P08,NUM2,How good are you at working with percentages?,5,male
+P08,NUM3,How good are you at calculating a 15% tip?,3,male
+P08,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,6,male
+P08,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",5,male
+P08,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",6,male
+P08,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",1,male
+P08,NUM8,How often do you find numerical information to be useful?,5,male
+P09,BAG1,I usually gesture a lot when I talk to make my self understood better.,4,female
+P09,BAG2,I like talking to people who gesture a lot when they talk.,3,female
+P09,BAG3,I've better told before that I gesture a lot when I talk.,2,female
+P09,BAG4,I find it more difficult to understand actors when they gesture a lot.,3,female
+P09,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",2,female
+P09,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,2,female
+P09,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,3,female
+P09,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",3,female
+P09,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",2,female
+P09,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",3,female
+P09,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",2,female
+P09,BAG12,I like having my hands free when I have a discussion with someone.,2,female
+P09,NUM1,How good are you at working with fractions?,4,female
+P09,NUM2,How good are you at working with percentages?,4,female
+P09,NUM3,How good are you at calculating a 15% tip?,5,female
+P09,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,4,female
+P09,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",2,female
+P09,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",2,female
+P09,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",5,female
+P09,NUM8,How often do you find numerical information to be useful?,4,female
+P10,BAG1,I usually gesture a lot when I talk to make my self understood better.,5,male
+P10,BAG2,I like talking to people who gesture a lot when they talk.,5,male
+P10,BAG3,I've better told before that I gesture a lot when I talk.,3,male
+P10,BAG4,I find it more difficult to understand actors when they gesture a lot.,1,male
+P10,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",5,male
+P10,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,1,male
+P10,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,5,male
+P10,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",5,male
+P10,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",2,male
+P10,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",5,male
+P10,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",1,male
+P10,BAG12,I like having my hands free when I have a discussion with someone.,4,male
+P10,NUM1,How good are you at working with fractions?,5,male
+P10,NUM2,How good are you at working with percentages?,4,male
+P10,NUM3,How good are you at calculating a 15% tip?,5,male
+P10,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,6,male
+P10,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",6,male
+P10,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",5,male
+P10,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",5,male
+P10,NUM8,How often do you find numerical information to be useful?,5,male
+P11,BAG1,I usually gesture a lot when I talk to make my self understood better.,4,male
+P11,BAG2,I like talking to people who gesture a lot when they talk.,5,male
+P11,BAG3,I've better told before that I gesture a lot when I talk.,3,male
+P11,BAG4,I find it more difficult to understand actors when they gesture a lot.,2,male
+P11,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",4,male
+P11,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,1,male
+P11,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,2,male
+P11,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",4,male
+P11,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",2,male
+P11,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",3,male
+P11,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",1,male
+P11,BAG12,I like having my hands free when I have a discussion with someone.,4,male
+P11,NUM1,How good are you at working with fractions?,4,male
+P11,NUM2,How good are you at working with percentages?,2,male
+P11,NUM3,How good are you at calculating a 15% tip?,5,male
+P11,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,5,male
+P11,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",6,male
+P11,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",1,male
+P11,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",5,male
+P11,NUM8,How often do you find numerical information to be useful?,5,male
+P12,BAG1,I usually gesture a lot when I talk to make my self understood better.,5,female
+P12,BAG2,I like talking to people who gesture a lot when they talk.,4,female
+P12,BAG3,I've better told before that I gesture a lot when I talk.,3,female
+P12,BAG4,I find it more difficult to understand actors when they gesture a lot.,1,female
+P12,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",4,female
+P12,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,3,female
+P12,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,3,female
+P12,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",5,female
+P12,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",1,female
+P12,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",2,female
+P12,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",1,female
+P12,BAG12,I like having my hands free when I have a discussion with someone.,3,female
+P12,NUM1,How good are you at working with fractions?,3,female
+P12,NUM2,How good are you at working with percentages?,2,female
+P12,NUM3,How good are you at calculating a 15% tip?,2,female
+P12,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,2,female
+P12,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",3,female
+P12,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",4,female
+P12,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",1,female
+P12,NUM8,How often do you find numerical information to be useful?,4,female
+P13,BAG1,I usually gesture a lot when I talk to make my self understood better.,5,female
+P13,BAG2,I like talking to people who gesture a lot when they talk.,1,female
+P13,BAG3,I've better told before that I gesture a lot when I talk.,1,female
+P13,BAG4,I find it more difficult to understand actors when they gesture a lot.,1,female
+P13,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",5,female
+P13,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,2,female
+P13,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,2,female
+P13,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",5,female
+P13,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",1,female
+P13,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",3,female
+P13,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",1,female
+P13,BAG12,I like having my hands free when I have a discussion with someone.,4,female
+P13,NUM1,How good are you at working with fractions?,6,female
+P13,NUM2,How good are you at working with percentages?,6,female
+P13,NUM3,How good are you at calculating a 15% tip?,6,female
+P13,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,6,female
+P13,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",5,female
+P13,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",3,female
+P13,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",2,female
+P13,NUM8,How often do you find numerical information to be useful?,4,female
+P14,BAG1,I usually gesture a lot when I talk to make my self understood better.,4,female
+P14,BAG2,I like talking to people who gesture a lot when they talk.,3,female
+P14,BAG3,I've better told before that I gesture a lot when I talk.,1,female
+P14,BAG4,I find it more difficult to understand actors when they gesture a lot.,2,female
+P14,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",5,female
+P14,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,3,female
+P14,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,4,female
+P14,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",4,female
+P14,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",1,female
+P14,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",4,female
+P14,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",2,female
+P14,BAG12,I like having my hands free when I have a discussion with someone.,2,female
+P14,NUM1,How good are you at working with fractions?,2,female
+P14,NUM2,How good are you at working with percentages?,4,female
+P14,NUM3,How good are you at calculating a 15% tip?,4,female
+P14,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,4,female
+P14,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",3,female
+P14,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",5,female
+P14,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",2,female
+P14,NUM8,How often do you find numerical information to be useful?,4,female
+P15,BAG1,I usually gesture a lot when I talk to make my self understood better.,3,male
+P15,BAG2,I like talking to people who gesture a lot when they talk.,3,male
+P15,BAG3,I've better told before that I gesture a lot when I talk.,2,male
+P15,BAG4,I find it more difficult to understand actors when they gesture a lot.,2,male
+P15,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",4,male
+P15,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,2,male
+P15,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,1,male
+P15,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",4,male
+P15,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",2,male
+P15,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",2,male
+P15,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",2,male
+P15,BAG12,I like having my hands free when I have a discussion with someone.,2,male
+P15,NUM1,How good are you at working with fractions?,2,male
+P15,NUM2,How good are you at working with percentages?,2,male
+P15,NUM3,How good are you at calculating a 15% tip?,2,male
+P15,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,3,male
+P15,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",4,male
+P15,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",4,male
+P15,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",3,male
+P15,NUM8,How often do you find numerical information to be useful?,5,male
+P16,BAG1,I usually gesture a lot when I talk to make my self understood better.,2,female
+P16,BAG2,I like talking to people who gesture a lot when they talk.,3,female
+P16,BAG3,I've better told before that I gesture a lot when I talk.,4,female
+P16,BAG4,I find it more difficult to understand actors when they gesture a lot.,2,female
+P16,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",4,female
+P16,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,2,female
+P16,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,4,female
+P16,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",4,female
+P16,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",2,female
+P16,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",4,female
+P16,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",4,female
+P16,BAG12,I like having my hands free when I have a discussion with someone.,4,female
+P16,NUM1,How good are you at working with fractions?,4,female
+P16,NUM2,How good are you at working with percentages?,4,female
+P16,NUM3,How good are you at calculating a 15% tip?,4,female
+P16,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,4,female
+P16,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",5,female
+P16,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",5,female
+P16,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",3,female
+P16,NUM8,How often do you find numerical information to be useful?,4,female
+P17,BAG1,I usually gesture a lot when I talk to make my self understood better.,5,female
+P17,BAG2,I like talking to people who gesture a lot when they talk.,3,female
+P17,BAG3,I've better told before that I gesture a lot when I talk.,2,female
+P17,BAG4,I find it more difficult to understand actors when they gesture a lot.,2,female
+P17,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",5,female
+P17,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,1,female
+P17,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,2,female
+P17,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",4,female
+P17,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",2,female
+P17,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",2,female
+P17,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",4,female
+P17,BAG12,I like having my hands free when I have a discussion with someone.,3,female
+P17,NUM1,How good are you at working with fractions?,3,female
+P17,NUM2,How good are you at working with percentages?,3,female
+P17,NUM3,How good are you at calculating a 15% tip?,4,female
+P17,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,3,female
+P17,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",3,female
+P17,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",4,female
+P17,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",3,female
+P17,NUM8,How often do you find numerical information to be useful?,5,female
+P18,BAG1,I usually gesture a lot when I talk to make my self understood better.,4,male
+P18,BAG2,I like talking to people who gesture a lot when they talk.,4,male
+P18,BAG3,I've better told before that I gesture a lot when I talk.,2,male
+P18,BAG4,I find it more difficult to understand actors when they gesture a lot.,1,male
+P18,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",5,male
+P18,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,2,male
+P18,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,3,male
+P18,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",5,male
+P18,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",1,male
+P18,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",3,male
+P18,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",2,male
+P18,BAG12,I like having my hands free when I have a discussion with someone.,1,male
+P18,NUM1,How good are you at working with fractions?,4,male
+P18,NUM2,How good are you at working with percentages?,4,male
+P18,NUM3,How good are you at calculating a 15% tip?,5,male
+P18,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,4,male
+P18,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",4,male
+P18,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",4,male
+P18,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",4,male
+P18,NUM8,How often do you find numerical information to be useful?,6,male
+P19,BAG1,I usually gesture a lot when I talk to make my self understood better.,2,female
+P19,BAG2,I like talking to people who gesture a lot when they talk.,3,female
+P19,BAG3,I've better told before that I gesture a lot when I talk.,1,female
+P19,BAG4,I find it more difficult to understand actors when they gesture a lot.,1,female
+P19,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",3,female
+P19,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,1,female
+P19,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,2,female
+P19,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",3,female
+P19,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",1,female
+P19,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",2,female
+P19,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",1,female
+P19,BAG12,I like having my hands free when I have a discussion with someone.,2,female
+P19,NUM1,How good are you at working with fractions?,3,female
+P19,NUM2,How good are you at working with percentages?,3,female
+P19,NUM3,How good are you at calculating a 15% tip?,4,female
+P19,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,4,female
+P19,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",3,female
+P19,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",2,female
+P19,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",2,female
+P19,NUM8,How often do you find numerical information to be useful?,3,female
+P20,BAG1,I usually gesture a lot when I talk to make my self understood better.,3,female
+P20,BAG2,I like talking to people who gesture a lot when they talk.,5,female
+P20,BAG3,I've better told before that I gesture a lot when I talk.,1,female
+P20,BAG4,I find it more difficult to understand actors when they gesture a lot.,1,female
+P20,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",4,female
+P20,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,2,female
+P20,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,4,female
+P20,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",5,female
+P20,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",1,female
+P20,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",4,female
+P20,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",2,female
+P20,BAG12,I like having my hands free when I have a discussion with someone.,3,female
+P20,NUM1,How good are you at working with fractions?,2,female
+P20,NUM2,How good are you at working with percentages?,2,female
+P20,NUM3,How good are you at calculating a 15% tip?,2,female
+P20,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,4,female
+P20,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",3,female
+P20,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",5,female
+P20,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",2,female
+P20,NUM8,How often do you find numerical information to be useful?,4,female
+P21,BAG1,I usually gesture a lot when I talk to make my self understood better.,3,female
+P21,BAG2,I like talking to people who gesture a lot when they talk.,4,female
+P21,BAG3,I've better told before that I gesture a lot when I talk.,2,female
+P21,BAG4,I find it more difficult to understand actors when they gesture a lot.,3,female
+P21,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",3,female
+P21,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,3,female
+P21,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,3,female
+P21,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",5,female
+P21,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",2,female
+P21,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",2,female
+P21,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",1,female
+P21,BAG12,I like having my hands free when I have a discussion with someone.,3,female
+P21,NUM1,How good are you at working with fractions?,2,female
+P21,NUM2,How good are you at working with percentages?,3,female
+P21,NUM3,How good are you at calculating a 15% tip?,2,female
+P21,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,2,female
+P21,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",2,female
+P21,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",1,female
+P21,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",3,female
+P21,NUM8,How often do you find numerical information to be useful?,2,female
+P22,BAG1,I usually gesture a lot when I talk to make my self understood better.,4,male
+P22,BAG2,I like talking to people who gesture a lot when they talk.,3,male
+P22,BAG3,I've better told before that I gesture a lot when I talk.,2,male
+P22,BAG4,I find it more difficult to understand actors when they gesture a lot.,3,male
+P22,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",5,male
+P22,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,4,male
+P22,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,3,male
+P22,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",4,male
+P22,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",3,male
+P22,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",4,male
+P22,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",4,male
+P22,BAG12,I like having my hands free when I have a discussion with someone.,4,male
+P22,NUM1,How good are you at working with fractions?,5,male
+P22,NUM2,How good are you at working with percentages?,5,male
+P22,NUM3,How good are you at calculating a 15% tip?,6,male
+P22,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,6,male
+P22,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",3,male
+P22,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",4,male
+P22,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",3,male
+P22,NUM8,How often do you find numerical information to be useful?,4,male
+P23,BAG1,I usually gesture a lot when I talk to make my self understood better.,5,female
+P23,BAG2,I like talking to people who gesture a lot when they talk.,4,female
+P23,BAG3,I've better told before that I gesture a lot when I talk.,4,female
+P23,BAG4,I find it more difficult to understand actors when they gesture a lot.,3,female
+P23,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",5,female
+P23,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,2,female
+P23,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,2,female
+P23,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",5,female
+P23,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",2,female
+P23,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",5,female
+P23,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",1,female
+P23,BAG12,I like having my hands free when I have a discussion with someone.,5,female
+P23,NUM1,How good are you at working with fractions?,1,female
+P23,NUM2,How good are you at working with percentages?,2,female
+P23,NUM3,How good are you at calculating a 15% tip?,3,female
+P23,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,5,female
+P23,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",6,female
+P23,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",1,female
+P23,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",6,female
+P23,NUM8,How often do you find numerical information to be useful?,2,female
+P24,BAG1,I usually gesture a lot when I talk to make my self understood better.,4,female
+P24,BAG2,I like talking to people who gesture a lot when they talk.,4,female
+P24,BAG3,I've better told before that I gesture a lot when I talk.,2,female
+P24,BAG4,I find it more difficult to understand actors when they gesture a lot.,3,female
+P24,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",5,female
+P24,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,2,female
+P24,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,2,female
+P24,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",4,female
+P24,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",2,female
+P24,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",4,female
+P24,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",1,female
+P24,BAG12,I like having my hands free when I have a discussion with someone.,4,female
+P24,NUM1,How good are you at working with fractions?,2,female
+P24,NUM2,How good are you at working with percentages?,2,female
+P24,NUM3,How good are you at calculating a 15% tip?,2,female
+P24,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,3,female
+P24,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",4,female
+P24,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",1,female
+P24,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",2,female
+P24,NUM8,How often do you find numerical information to be useful?,3,female
+P25,BAG1,I usually gesture a lot when I talk to make my self understood better.,5,female
+P25,BAG2,I like talking to people who gesture a lot when they talk.,4,female
+P25,BAG3,I've better told before that I gesture a lot when I talk.,4,female
+P25,BAG4,I find it more difficult to understand actors when they gesture a lot.,1,female
+P25,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",4,female
+P25,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,1,female
+P25,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,1,female
+P25,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",5,female
+P25,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",2,female
+P25,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",5,female
+P25,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",3,female
+P25,BAG12,I like having my hands free when I have a discussion with someone.,5,female
+P25,NUM1,How good are you at working with fractions?,2,female
+P25,NUM2,How good are you at working with percentages?,2,female
+P25,NUM3,How good are you at calculating a 15% tip?,1,female
+P25,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,1,female
+P25,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",1,female
+P25,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",1,female
+P25,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",6,female
+P25,NUM8,How often do you find numerical information to be useful?,2,female
+P26,BAG1,I usually gesture a lot when I talk to make my self understood better.,4,female
+P26,BAG2,I like talking to people who gesture a lot when they talk.,4,female
+P26,BAG3,I've better told before that I gesture a lot when I talk.,3,female
+P26,BAG4,I find it more difficult to understand actors when they gesture a lot.,1,female
+P26,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",4,female
+P26,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,1,female
+P26,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,3,female
+P26,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",3,female
+P26,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",2,female
+P26,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",4,female
+P26,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",3,female
+P26,BAG12,I like having my hands free when I have a discussion with someone.,4,female
+P26,NUM1,How good are you at working with fractions?,4,female
+P26,NUM2,How good are you at working with percentages?,4,female
+P26,NUM3,How good are you at calculating a 15% tip?,5,female
+P26,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,5,female
+P26,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",5,female
+P26,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",5,female
+P26,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",2,female
+P26,NUM8,How often do you find numerical information to be useful?,5,female
+P27,BAG1,I usually gesture a lot when I talk to make my self understood better.,4,female
+P27,BAG2,I like talking to people who gesture a lot when they talk.,4,female
+P27,BAG3,I've better told before that I gesture a lot when I talk.,4,female
+P27,BAG4,I find it more difficult to understand actors when they gesture a lot.,2,female
+P27,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",5,female
+P27,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,2,female
+P27,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,2,female
+P27,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",5,female
+P27,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",3,female
+P27,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",4,female
+P27,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",2,female
+P27,BAG12,I like having my hands free when I have a discussion with someone.,4,female
+P27,NUM1,How good are you at working with fractions?,2,female
+P27,NUM2,How good are you at working with percentages?,2,female
+P27,NUM3,How good are you at calculating a 15% tip?,1,female
+P27,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,3,female
+P27,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",3,female
+P27,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",3,female
+P27,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",4,female
+P27,NUM8,How often do you find numerical information to be useful?,3,female
+P28,BAG1,I usually gesture a lot when I talk to make my self understood better.,4,female
+P28,BAG2,I like talking to people who gesture a lot when they talk.,4,female
+P28,BAG3,I've better told before that I gesture a lot when I talk.,4,female
+P28,BAG4,I find it more difficult to understand actors when they gesture a lot.,3,female
+P28,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",5,female
+P28,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,2,female
+P28,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,3,female
+P28,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",5,female
+P28,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",1,female
+P28,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",2,female
+P28,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",1,female
+P28,BAG12,I like having my hands free when I have a discussion with someone.,4,female
+P28,NUM1,How good are you at working with fractions?,1,female
+P28,NUM2,How good are you at working with percentages?,1,female
+P28,NUM3,How good are you at calculating a 15% tip?,1,female
+P28,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,3,female
+P28,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",5,female
+P28,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",1,female
+P28,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",3,female
+P28,NUM8,How often do you find numerical information to be useful?,4,female
+P29,BAG1,I usually gesture a lot when I talk to make my self understood better.,2,female
+P29,BAG2,I like talking to people who gesture a lot when they talk.,2,female
+P29,BAG3,I've better told before that I gesture a lot when I talk.,2,female
+P29,BAG4,I find it more difficult to understand actors when they gesture a lot.,3,female
+P29,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",4,female
+P29,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,2,female
+P29,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,4,female
+P29,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",4,female
+P29,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",2,female
+P29,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",5,female
+P29,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",2,female
+P29,BAG12,I like having my hands free when I have a discussion with someone.,2,female
+P29,NUM1,How good are you at working with fractions?,2,female
+P29,NUM2,How good are you at working with percentages?,2,female
+P29,NUM3,How good are you at calculating a 15% tip?,1,female
+P29,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,5,female
+P29,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",2,female
+P29,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",1,female
+P29,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",3,female
+P29,NUM8,How often do you find numerical information to be useful?,2,female
+P30,BAG1,I usually gesture a lot when I talk to make my self understood better.,2,female
+P30,BAG2,I like talking to people who gesture a lot when they talk.,3,female
+P30,BAG3,I've better told before that I gesture a lot when I talk.,2,female
+P30,BAG4,I find it more difficult to understand actors when they gesture a lot.,3,female
+P30,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",4,female
+P30,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,2,female
+P30,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,4,female
+P30,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",3,female
+P30,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",2,female
+P30,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",2,female
+P30,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",2,female
+P30,BAG12,I like having my hands free when I have a discussion with someone.,2,female
+P30,NUM1,How good are you at working with fractions?,5,female
+P30,NUM2,How good are you at working with percentages?,5,female
+P30,NUM3,How good are you at calculating a 15% tip?,5,female
+P30,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,5,female
+P30,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",6,female
+P30,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",6,female
+P30,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",1,female
+P30,NUM8,How often do you find numerical information to be useful?,6,female
+P31,BAG1,I usually gesture a lot when I talk to make my self understood better.,3,female
+P31,BAG2,I like talking to people who gesture a lot when they talk.,4,female
+P31,BAG3,I've better told before that I gesture a lot when I talk.,3,female
+P31,BAG4,I find it more difficult to understand actors when they gesture a lot.,1,female
+P31,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",4,female
+P31,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,1,female
+P31,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,4,female
+P31,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",5,female
+P31,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",1,female
+P31,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",4,female
+P31,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",1,female
+P31,BAG12,I like having my hands free when I have a discussion with someone.,5,female
+P31,NUM1,How good are you at working with fractions?,2,female
+P31,NUM2,How good are you at working with percentages?,3,female
+P31,NUM3,How good are you at calculating a 15% tip?,2,female
+P31,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,2,female
+P31,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",3,female
+P31,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",4,female
+P31,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",6,female
+P31,NUM8,How often do you find numerical information to be useful?,5,female
+P32,BAG1,I usually gesture a lot when I talk to make my self understood better.,4,female
+P32,BAG2,I like talking to people who gesture a lot when they talk.,5,female
+P32,BAG3,I've better told before that I gesture a lot when I talk.,2,female
+P32,BAG4,I find it more difficult to understand actors when they gesture a lot.,2,female
+P32,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",4,female
+P32,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,3,female
+P32,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,2,female
+P32,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",4,female
+P32,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",3,female
+P32,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",4,female
+P32,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",3,female
+P32,BAG12,I like having my hands free when I have a discussion with someone.,2,female
+P32,NUM1,How good are you at working with fractions?,2,female
+P32,NUM2,How good are you at working with percentages?,3,female
+P32,NUM3,How good are you at calculating a 15% tip?,3,female
+P32,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,4,female
+P32,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",5,female
+P32,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",4,female
+P32,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",5,female
+P32,NUM8,How often do you find numerical information to be useful?,4,female
+P33,BAG1,I usually gesture a lot when I talk to make my self understood better.,4,male
+P33,BAG2,I like talking to people who gesture a lot when they talk.,5,male
+P33,BAG3,I've better told before that I gesture a lot when I talk.,3,male
+P33,BAG4,I find it more difficult to understand actors when they gesture a lot.,1,male
+P33,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",4,male
+P33,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,1,male
+P33,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,3,male
+P33,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",5,male
+P33,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",1,male
+P33,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",4,male
+P33,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",3,male
+P33,BAG12,I like having my hands free when I have a discussion with someone.,2,male
+P33,NUM1,How good are you at working with fractions?,5,male
+P33,NUM2,How good are you at working with percentages?,5,male
+P33,NUM3,How good are you at calculating a 15% tip?,6,male
+P33,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,6,male
+P33,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",4,male
+P33,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",4,male
+P33,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",2,male
+P33,NUM8,How often do you find numerical information to be useful?,5,male
+P34,BAG1,I usually gesture a lot when I talk to make my self understood better.,5,male
+P34,BAG2,I like talking to people who gesture a lot when they talk.,4,male
+P34,BAG3,I've better told before that I gesture a lot when I talk.,5,male
+P34,BAG4,I find it more difficult to understand actors when they gesture a lot.,3,male
+P34,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",4,male
+P34,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,2,male
+P34,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,3,male
+P34,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",4,male
+P34,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",2,male
+P34,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",4,male
+P34,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",2,male
+P34,BAG12,I like having my hands free when I have a discussion with someone.,4,male
+P34,NUM1,How good are you at working with fractions?,4,male
+P34,NUM2,How good are you at working with percentages?,4,male
+P34,NUM3,How good are you at calculating a 15% tip?,5,male
+P34,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,3,male
+P34,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",5,male
+P34,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",2,male
+P34,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",5,male
+P34,NUM8,How often do you find numerical information to be useful?,4,male
+P35,BAG1,I usually gesture a lot when I talk to make my self understood better.,3,female
+P35,BAG2,I like talking to people who gesture a lot when they talk.,3,female
+P35,BAG3,I've better told before that I gesture a lot when I talk.,2,female
+P35,BAG4,I find it more difficult to understand actors when they gesture a lot.,1,female
+P35,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",4,female
+P35,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,2,female
+P35,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,3,female
+P35,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",5,female
+P35,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",2,female
+P35,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",4,female
+P35,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",3,female
+P35,BAG12,I like having my hands free when I have a discussion with someone.,4,female
+P35,NUM1,How good are you at working with fractions?,3,female
+P35,NUM2,How good are you at working with percentages?,2,female
+P35,NUM3,How good are you at calculating a 15% tip?,2,female
+P35,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,3,female
+P35,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",5,female
+P35,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",4,female
+P35,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",3,female
+P35,NUM8,How often do you find numerical information to be useful?,4,female
+P36,BAG1,I usually gesture a lot when I talk to make my self understood better.,4,male
+P36,BAG2,I like talking to people who gesture a lot when they talk.,4,male
+P36,BAG3,I've better told before that I gesture a lot when I talk.,5,male
+P36,BAG4,I find it more difficult to understand actors when they gesture a lot.,5,male
+P36,BAG5,"When talking in noisy places, I often gesture a lot to make myself understood over the noise.",5,male
+P36,BAG6,I find it very annoying when I'm talking to someone who gestures a lot during the conversation.,3,male
+P36,BAG7,I often feel amazed by people who are able to gesture a lot when they talk.,4,male
+P36,BAG8,"When I'm in a foreign country where I don't speak the language so well, I do a lot of gesturing to reinforce what I'm saying.",5,male
+P36,BAG9,"During a lecture, it's very distracting to me if the speaker gestures a lot.",5,male
+P36,BAG10,"When I see someone gesturing a lot, I often wonder if I would have used the same gestures.",2,male
+P36,BAG11,"It looks silly when you see a conversation between two people, and one of them is gesturing a lot.",4,male
+P36,BAG12,I like having my hands free when I have a discussion with someone.,5,male
+P36,NUM1,How good are you at working with fractions?,5,male
+P36,NUM2,How good are you at working with percentages?,6,male
+P36,NUM3,How good are you at calculating a 15% tip?,5,male
+P36,NUM4,How good are you at figuring out how much a shirt will cost if it is 25% off?,6,male
+P36,NUM5,"When reading the newspaper, how helpful do you find tables and graphs that are parts of a story?",2,male
+P36,NUM6,"When people tell you the chance of something happening, do you prefer that they use words (""it rarely happens"") or numbers (""there's a 1% chance"")?",4,male
+P36,NUM7,"When you hear a weather forecast, do you prefer predictions using percentages (e.g., ""there will be a 20% chance of rain today"") or predictions using only words (e.g., ""there is a small chance of rain today"")?",2,male
+P36,NUM8,How often do you find numerical information to be useful?,5,male

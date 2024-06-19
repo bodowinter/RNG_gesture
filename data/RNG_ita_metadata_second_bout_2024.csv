@@ -1,0 +1,30 @@
+﻿Participant ID,Age,Undergraduate program,Handedness,Gender,instrument,which instrument,Language,other_language,BAG_1,BAG_2,BAG_3,BAG_4,BAG_5,BAG_6,BAG_7,BAG_8,BAG_9,BAG_10,BAG_11,BAG_12,SNS_1,SNS_2,SNS_3,SNS_4,SNS_5,SNS_6,SNS_7,SNS_8
+P01,34,postdoc sociology,right,male,no,,italian,english,3,2,1,1,2,2,4,2,2,4,2,4,4,2,4,4,3,2,4,3
+P02,27,cognitive sciences (PhD),left,male,no,,italian,"english, german",5,3,3,1,5,1,1,1,1,2,1,2,3,3,2,4,4,3,6,5
+P03,27,cognitive sciences (PhD),right,female,no,,italian,"english, french",3,2,2,4,5,2,4,4,3,1,2,5,2,4,3,4,6,5,5,5
+P04,31,research fellow experimental psychology,right,female,yes,ukelele,italian,english,4,4,3,1,5,1,1,3,1,2,1,4,2,2,2,2,5,3,3,5
+P05,28,customer service (job),right,female,no,,italian,"english, french, spanish, dutch",2,5,1,1,4,1,1,4,1,3,1,4,2,2,2,3,6,4,3,5
+ P06,22,Italian language and culture for foreigners,right,female,no,,italian,"english, chinese, (calabrese?)",4,3,2,1,2,1,1,2,3,1,1,4,5,3,2,5,4,5,4,5
+P07,25,Semiotics,right,male,no,,italian,english,3,3,1,2,2,1,2,3,1,1,1,2,2,3,2,3,5,5,3,5
+P08,24,Philosophy,right,female,no,,italian,"english, french, german, sign language (just started)",3,4,4,2,2,1,2,4,2,4,1,2,2,2,1,2,5,4,4,5
+P09,23,Italian language and culture for foreigners,Right,female,no,,italian,"english, russian, spanish",4,2,2,3,4,4,2,4,3,3,4,4,4,3,2,3,3,2,2,2
+P10,24,philosophy,right,male,yes,drums,italian,english,2,2,2,1,5,2,1,2,2,1,1,2,3,2,2,5,3,3,5,4
+P12,22,"data, methods and theoretical models for linguistics ",right,female,no,,italian,english,5,4,3,1,5,1,1,5,1,1,1,5,5,5,5,6,6,6,6,6
+P13,25,Philosophy,right,female,no,,italian,english,5,4,5,3,4,2,2,4,1,2,2,4,5,5,5,6,3,6,6,6
+P14,23,Linguistics,right,male,no,,italian,"english,french",5,4,5,1,5,1,1,3,1,4,1,4,3,2,2,3,4,2,5,4
+P15,28,Philosphy,right,male,yes,bass guitar,italian,english,4,3,2,4,5,3,2,5,2,2,2,3,3,2,2,3,3,1,5,2
+P16,24,Philosophy,right,female,no,,italian,"english, german, norwegian",4,4,4,3,4,3,2,4,4,3,3,3,4,4,3,3,5,5,3,4
+P17,27,Italian language and culture for foreigners,right,female,no,,italian,"english, french, spanish, russian",5,5,5,1,1,1,1,5,3,5,1,5,1,1,1,1,3,5,6,4
+P18,27,Semiotics (PhD),right,male,yes,gutiar,italian,english,3,3,2,1,4,3,2,5,1,2,4,2,5,4,4,4,3,2,4,4
+P19,22,Italian language and culture for foreigners,right,female,no,,italian,"german, russian, english, french",5,5,5,3,5,2,1,5,2,5,1,5,1,1,1,1,1,1,4,3
+P20,24,Italian studies,right,female,no,,italian,english,5,4,5,3,4,2,1,2,3,1,1,3,3,4,4,6,6,4,3,6
+P21,23,planning and managing of educational intervention in social distress,right,female,yes,flute,italian,english,5,5,5,1,3,1,1,5,1,2,1,4,1,1,1,2,4,4,1,4
+P22,27,planning and managing of educational intervention in social distress,right,female,no,,italian,english,4,4,2,2,5,2,3,2,2,3,2,4,2,2,1,2,4,5,3,5
+P23,24,Philosophy,left,male,no,,italian,"english, french, spanish",4,3,2,1,3,3,1,3,1,2,3,2,3,3,3,3,5,3,4,5
+P24,24,linguistics,right,female,no,,italian,english,3,2,2,1,5,2,3,5,2,3,1,2,5,5,5,5,6,3,2,6
+P25,25,Philosophy (Phd),right,male,no,,italian,english,4,3,2,1,5,1,1,1,1,2,1,5,5,5,5,5,2,5,1,5
+P26,22,Philosophy,right,female,no,,italian,"german, english, french",4,3,5,4,3,1,1,5,2,3,1,4,1,2,2,2,2,1,6,3
+P28,21,History,right,female,no,,italian,english,5,5,4,1,4,1,1,4,1,2,1,3,5,3,3,3,5,4,4,6
+P29,30,"Linguistics: english, spanish, chinese",right,male,yes,guitar and electric bass,italian,"english, spanish, chinese",5,3,4,1,5,2,2,5,2,5,3,3,5,5,5,6,4,3,2,5
+P30,27,philosophy (Phd),right,female,no ,,italian,english,4,3,3,2,2,3,3,4,2,3,2,4,2,2,2,2,5,2,5,5
+P31,27,Philosophy (Phd),right,male,yes,guitar,italian,english,2,1,1,2,3,4,2,2,2,1,3,3,3,3,4,6,4,4,4,5
