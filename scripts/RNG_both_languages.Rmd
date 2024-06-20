@@ -850,6 +850,9 @@ diff_p
 ggsave(plot = diff_p,
        file = '../figures/difference_scores.pdf',
        width = 6, height = 4.5)
+ggsave(plot = diff_p,
+       file = '../figures/png/difference_scores.png',
+       width = 6, height = 4.5)
 ```
 
 ## Pair plot
@@ -931,6 +934,9 @@ pair_p <- pair_p +
 pair_p
 ggsave(plot = pair_p,
        file = '../figures/pair_plot.pdf',
+       width = 3.5, height = 4.5)
+ggsave(plot = pair_p,
+       file = '../figures/png/pair_plot.png',
        width = 3.5, height = 4.5)
 ```
 
@@ -1146,6 +1152,9 @@ diff_p
 ggsave(plot = diff_p,
        file = '../figures/main_mdl_posterior_effect.pdf',
        width = 6, height = 4.5)
+ggsave(plot = diff_p,
+       file = '../figures/png/main_mdl_posterior_effect.png',
+       width = 6, height = 4.5)
 ```
 
 As can be seen, the posterior is to the right of zero, which means that given this data and model, it is quite implausible that the gesture effect would go the other way around...
@@ -1303,6 +1312,9 @@ diff_p
 ggsave(plot = diff_p,
        file = '../figures/group_mdl_posterior_effect.pdf',
        width = 4, height = 6.5)
+ggsave(plot = diff_p,
+       file = '../figures/png/group_mdl_posterior_effect.png',
+       width = 4, height = 6.5)
 ```
 
 ## Starting position
@@ -1368,8 +1380,17 @@ Test main hypothesis:
 ```{r}
 hypothesis(start_mdl, 'movement_c1 > 0')
 hypothesis(start_mdl, 'start_c1 > 0')
-hypothesis(start_mdl, 'movement_c1:start_c1 > 0')
+hypothesis(start_mdl, 'movement_c1:start_c1 < 0')
 ```
+
+Descriptive statistics:
+
+```{r}
+df |> 
+  group_by(start_position) |> 
+  summarize(M = mean(number, na.rm = TRUE))
+```
+
 
 ## Gender
 
@@ -1578,6 +1599,9 @@ BAG_p
 ggsave(plot = BAG_p,
        file = '../figures/BAG_scatterplot.pdf',
        width = 5.4, height = 4.5)
+ggsave(plot = BAG_p,
+       file = '../figures/png/BAG_scatterplot.png',
+       width = 5.4, height = 4.5)
 ```
 
 Make a scatter plot for SNS scale:
@@ -1621,6 +1645,9 @@ SNS_p
 ggsave(plot = SNS_p,
        file = '../figures/SNS_scatterplot.pdf',
        width = 5.4, height = 4.5)
+ggsave(plot = SNS_p,
+       file = '../figures/png/SNS_scatterplot.png',
+       width = 5.4, height = 4.5)
 ```
 
 There doesn't seem to be anything going on with the individual differences, even if that one extreme value were excluded.
@@ -1645,6 +1672,9 @@ double_p <- BAG_p + SNS_p
 double_p
 ggsave(plot = double_p,
        file = '../figures/double_plot.pdf',
+       width = 8, height = 3.5)
+ggsave(plot = double_p,
+       file = '../figures/png/double_plot.png',
        width = 8, height = 3.5)
 ```
 
@@ -1941,6 +1971,9 @@ diff_p
 ggsave(plot = diff_p,
        file = '../figures/up_down_barplot.pdf',
        width = 3.5, height = 3.5)
+ggsave(plot = diff_p,
+       file = '../figures/png/up_down_barplot.png',
+       width = 3.5, height = 3.5)
 ```
 
 **BANANA: Bodo: Maybe later make this into a publication-ready plot? Not a priority right now.**
@@ -2199,6 +2232,9 @@ diff_p <- diff_p +
 diff_p
 ggsave(plot = diff_p,
        file = '../figures/group_mdl_posterior_effect_relative_difference.pdf',
+       width = 4, height = 6.5)
+ggsave(plot = diff_p,
+       file = '../figures/png/group_mdl_posterior_effect_relative_difference.png',
        width = 4, height = 6.5)
 ```
 
@@ -2473,6 +2509,9 @@ bar_p
 ggsave(plot = bar_p,
        file = '../figures/barplot.pdf',
        width = 10.5, height = 4.5)
+ggsave(plot = bar_p,
+       file = '../figures/png/barplot.png',
+       width = 10.5, height = 4.5)
 ```
 
 Another way of looking at this is to compute the proportion of cases for inwards and outwards, with stacked bar plots.
@@ -2509,6 +2548,9 @@ bar_p <- bar_p +
 bar_p
 ggsave(plot = bar_p,
        file = '../figures/stacked_barplot.pdf',
+       width = 10.5, height = 4.5)
+ggsave(plot = bar_p,
+       file = '../figures/png/stacked_barplot.png',
        width = 10.5, height = 4.5)
 ```
 
@@ -2577,6 +2619,9 @@ dot_p <- dot_p +
 dot_p
 ggsave(plot = dot_p,
        file = '../figures/number_dot_plot.pdf',
+       width = 10.5, height = 4.5)
+ggsave(plot = dot_p,
+       file = '../figures/png/number_dot_plot.png',
        width = 10.5, height = 4.5)
 ```
 
