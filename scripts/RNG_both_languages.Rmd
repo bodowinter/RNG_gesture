@@ -27,6 +27,7 @@ library(patchwork)    # for double plots
 library(brms)         # for Bayesian regression models
 library(tidybayes)    # for stat_halfeye() function
 library(effsize)      # for Cohen's d
+library(pwr)          # for effect size sensitivity analysis / power analysis
 ```
 
 *Note*: The `stat_halfeye()` function does not feature on any of the published plots, hence we're not citing it in the paper.
@@ -39,6 +40,7 @@ packageVersion('tidyverse')
 packageVersion('brms')
 packageVersion('tidybayes')
 packageVersion('effsize')
+packageVersion('pwr')
 ```
 
 Load data:
@@ -79,6 +81,8 @@ Look at the structure of the metadata files:
 meta_eng_2023
 meta_ita_2023
 ```
+
+**Nov 20, 2024**: Note that for the English data, there is two new columns: `age`, and `handedness` on the right edge of the table.
 
 Italian and English have different structures that need to be aligned so that we can merge the two and match it with the main experimental data.
 
@@ -299,8 +303,8 @@ Looks good.
 Extract gender information: Before we proceed, the gender information is entered differently for the English data however, so let's just extract that for now and save it in two separate objects, one for each bout of the English data collection.
 
 ```{r}
-eng_2023_gender <- distinct(meta_eng_2023, id, gender)
-eng_2024_gender <- distinct(meta_eng_2024, id, gender)
+eng_2023_gender <- distinct(meta_eng_2023, id, gender, age, handedness)
+eng_2024_gender <- distinct(meta_eng_2024, id, gender, age, handedness)
 ```
 
 Merge the gender data back into the files so that it is carried through the datasets below as well.
@@ -323,22 +327,54 @@ Do the same for Italian:
 # Rename ids for consistent matching:
 
 meta_ita_2023 <- mutate(meta_ita_2023, id = str_c('italian_', id)) |> 
-  rename(gender = Gender)
+  rename(gender = Gender,
+         age = Age,
+         handedness = Handedness)
 meta_ita_2024 <- mutate(meta_ita_2024, id = str_c('italian_', id)) |> 
-  rename(gender = Gender)
+  rename(gender = Gender,
+         age = Age,
+         handedness = Handedness)
+
+# Fix capitalization in 2024 dataset:
+
+meta_ita_2024 <- mutate(meta_ita_2024, handedness = str_to_lower(handedness))
 
 # Merge Italian gender data into there, 2023 data:
 
 gender_2023 <- meta_ita_2023[match(all_meta_2023$id, meta_ita_2023$id), ]$gender
 gender_2023 <- str_replace_all(gender_2023[!is.na(gender_2023)],
-                'femele', 'female')
+                'femele', 'female') # also strips NAs
 all_meta_2023[32:nrow(all_meta_2023), ]$gender <- gender_2023
+
+# Same for age:
+
+age_2023 <- meta_ita_2023[match(all_meta_2023$id, meta_ita_2023$id), ]$age
+age_2023 <- age_2023[!is.na(age_2023)]
+all_meta_2023[32:nrow(all_meta_2023), ]$age <- age_2023
+
+# Same for handedness:
+
+handedness_2023 <- meta_ita_2023[match(all_meta_2023$id, meta_ita_2023$id), ]$handedness
+handedness_2023 <- handedness_2023[!is.na(handedness_2023)]
+all_meta_2023[32:nrow(all_meta_2023), ]$handedness <- handedness_2023
 
 # Merge Italian gender data into there, 2024 data:
 
 gender_2024 <- meta_ita_2024[match(all_meta_2024$id, meta_ita_2024$id), ]$gender
 gender_2024 <- gender_2024[!is.na(gender_2024)]
 all_meta_2024[37:nrow(all_meta_2024), ]$gender <- gender_2024
+
+# Same for age, 2024 data:
+
+age_2024 <- meta_ita_2024[match(all_meta_2024$id, meta_ita_2024$id), ]$age
+age_2024 <- age_2024[!is.na(age_2024)]
+all_meta_2024[37:nrow(all_meta_2024), ]$age <- age_2024
+
+# Same for handedness, 2024 data:
+
+handedness_2024 <- meta_ita_2024[match(all_meta_2024$id, meta_ita_2024$id), ]$handedness
+handedness_2024 <- handedness_2024[!is.na(handedness_2024)]
+all_meta_2024[37:nrow(all_meta_2024), ]$handedness <- handedness_2024
 
 # Check that it is all correct:
 
@@ -440,9 +476,9 @@ Re-order:
 
 ```{r}
 ita_2023 <- select(ita_2023,
-                   id, gender, trial, movement, SNS, BAG, number)
+                   id, gender, age, handedness, trial, movement, SNS, BAG, number)
 ita_2024 <- select(ita_2024,
-                   id, gender, trial, movement, SNS, BAG, number)
+                   id, gender, age, handedness, trial, movement, SNS, BAG, number)
 ```
 
 Double-check:
@@ -487,9 +523,9 @@ Put both bouts for each year together, for English. Here we have to be careful a
 # Extract relevant columns:
 
 eng_2023 <- select(eng_2023,
-                   id, gender, trial, movement, SNS, BAG, number)
+                   id, gender, age, handedness, trial, movement, SNS, BAG, number)
 eng_2024 <- select(eng_2024,
-                   id, gender, trial, movement, SNS, BAG, number)
+                   id, gender, age, handedness, trial, movement, SNS, BAG, number)
 
 # Change IDs in 2024 dataset so they carry on from after P31, which is the last ppt of the first English dataset:
 
@@ -702,6 +738,45 @@ df |>
   mutate(p = n / sum(n))
 ```
 
+How many are lefties and righties?
+
+```{r}
+df |> 
+  distinct(language, handedness, id) |> 
+  count(language, handedness) |> 
+  group_by(language) |> 
+  mutate(p = n / sum(n))
+```
+
+How many are what age?
+
+```{r}
+df |> 
+  distinct(language, age, id) |> 
+  count(language, age) |> 
+  group_by(language) |> 
+  mutate(p = n / sum(n))
+```
+
+For age perhaps range per sample, and also means:
+
+```{r}
+df |> 
+  distinct(id, language, age) |> 
+  group_by(language) |> 
+  summarize(M = mean(age))
+```
+
+And range:
+
+```{r}
+df |> 
+  distinct(id, language, age) |> 
+  group_by(language) |> 
+  summarize(min = min(age),
+            max = max(age))
+```
+
 Without `NA`'s, how many values do we have?
 
 ```{r}
@@ -827,7 +902,7 @@ Show the distribution of difference scores for a closer look:
 
 diff_p <- df_ppt_wide |> 
   ggplot(aes(x = diff)) +
-  geom_density(fill = 'purple', alpha = 0.8) +
+  geom_density(fill = 'darkgrey', alpha = 0.8) +
   geom_vline(xintercept = 0, linetype = 'dashed')
 
 # Axes and labels:
@@ -892,27 +967,27 @@ Now we can create the plot:
 pair_p <- df_ppt |>
   ggplot(aes(x = movement, y = M,
              group = id)) +
-  geom_line(aes(col = effect), alpha = 0.8) +
-  geom_point(aes(fill = movement), size = 2, alpha = 0.7,
+  geom_line(aes(col = effect), alpha = 0.7) +
+  geom_point(aes(fill = movement), size = 2, alpha = 0.6,
              shape = 21, col = 'black')
 
-# Annotations:
-
-pair_p <- pair_p +
-  annotate('text',
-           x = rep(2.07, 2), y = annotate_y_positions,
-           label = str_c(annotate_labels,
-                         c(' of participants\ncongruent',
-                           ' of participants\nincongruent')),
-           col = c('black', 'grey'),
-           hjust = 0,
-           size = 3)
+# # Annotations:
+# 
+# pair_p <- pair_p +
+#   annotate('text',
+#            x = rep(2.07, 2), y = annotate_y_positions,
+#            label = str_c(annotate_labels,
+#                          c(' of participants\n+sign',
+#                            ' of participants\n-sign')),
+#            col = c('black', 'grey'),
+#            hjust = 0,
+#            size = 3)
 
 # Axes and labels:
 
 pair_p <- pair_p +
   scale_color_manual(values = c('black', 'grey')) +
-  scale_fill_manual(values = c('purple', 'steelblue')) +
+  scale_fill_manual(values = c('goldenrod3', 'purple')) +
   scale_y_continuous(limits = c(6, 20),
                      breaks = seq(6, 20, 2)) +
   xlab(NULL) +
@@ -1020,6 +1095,33 @@ binom.test(congruent_v_incongruent)
 
 Looks good too. While I don't care much about significance tests, it's nice to know that our results look strong when looked at from this very simple perspective that a lot of psych journals would consider to be good evidence.
 
+## Effect size sensitivity analysis
+
+** NEW Nov 13, 2024 **: Reviewer 1 requested an effect size sensitivity analysis, as described in Giner-Sorolla et al. (2024), "Power to detect what?"
+
+```{r}
+pwr.t.test(n = 120, sig.level = 0.05, power = 0.8)
+```
+
+To achieve 80% power with 120 participants, effect size would have to be at least d = 0.36, and we have d = 0.48
+
+What if we had only half the sample size?
+
+```{r}
+pwr.t.test(n = 60, sig.level = 0.05, power = 0.8)
+```
+
+Effect size would have to be d = 0.52.
+
+A "post-hoc" power analysis (not so good) where we take the sample effect size (as we have no access to the population effect size) would suggest we have high power.
+
+```{r}
+pwr.t.test(n = 120, sig.level = 0.05, d = 0.48)
+```
+
+power = 0.96
+
+
 ## Main model
 
 MCMC settings for better convergence (same for all models):
@@ -1123,7 +1225,7 @@ Extract the posterior of the condition difference for visualization:
 
 diff_p <- as_draws_df(beta_mdl, variable = 'b_movementoutwards') |> 
   ggplot(aes(x = b_movementoutwards)) +
-  stat_halfeye(fill = 'purple', alpha = 0.8) +
+  stat_halfeye(fill = 'darkgrey', alpha = 0.8) +
   geom_vline(xintercept = 0, linetype = 'dashed')
 
 # Axes and labels:
@@ -1158,6 +1260,200 @@ ggsave(plot = diff_p,
 ```
 
 As can be seen, the posterior is to the right of zero, which means that given this data and model, it is quite implausible that the gesture effect would go the other way around...
+
+## Individual CrIs from main model
+
+** NEW Nov 13, 2024 **:
+
+Reviewer 1 asked us to amend our 65% proportion of people show the effect, which is simply based on the sign of each participants average difference, with an approach that takes inferential uncertainty about each participant's difference score into account. We welcome this suggestion and therefore extract the 95% CrI's of each participant and check how many are above >0 using a 95% interval (analogous to "significance"), as well as using a 90% interval, as in Roth et al. (2024) "Don't SNARC me now!", Cognition.
+
+```{r}
+ppt_avgs <- coef(beta_mdl)[[1]][, , 'movementoutwards']
+```
+
+These are random effects deviations from the mean effect, so we also need to get the group average effect itself:
+
+```{r}
+avg_effect <- fixef(beta_mdl)['movementoutwards', 'Estimate']
+```
+
+Use this:
+
+```{r}
+sum((ppt_avgs[, 3] + avg_effect) > 0) / nrow(ppt_avgs)
+```
+
+96% "significantly" above zero using a 95% interval.
+
+Check variable names in posterior samples object so that we can use the `tidybayes` function `spread_draws()` to extract this:
+
+```{r}
+get_variables(beta_mdl)
+```
+
+Extract posterior draws into a new object called `ind_posts` for individual posterior estimates:
+
+```{r}
+ind_posts <- beta_mdl |> 
+  spread_draws(r_id[id,movementoutwards]) |> 
+  filter(movementoutwards == 'movementoutwards') |> 
+  ungroup() |> 
+  select(-(.chain:.draw)) |> 
+  rename(posterior_sample = r_id)
+```
+
+Quickly sanity check the means:
+
+```{r}
+ind_posts |> 
+  group_by(id) |> 
+  summarize(M = mean(posterior_sample) + avg_effect) |> 
+  print(n = Inf)
+
+# How many of the means are above zero?
+
+ind_posts |> 
+  group_by(id) |> 
+  summarize(M = mean(posterior_sample) + avg_effect) |> 
+  mutate(sign = if_else(M > 0, '+', '-')) |> 
+  count(sign)
+```
+
+All... this is due to the presumably shrinkage towards the main effect. As we have many participants, shrinkage will be quite strong.
+
+To be as analogous to Roth et al. (2024) as possible, let's fit separate models for each participants. I'd usually never do that, but that way we don't use any information from other participants to inform each participant's estimate, i.e., each participant is regarded entirely on its own, unfettered by information from the group.
+
+Chunk is set to `eval = FALSE` as it takes a long time.
+
+```{r eval = FALSE}
+# Extract vector of participant ids:
+
+all_ids <- df |> distinct(id) |> pull(id)
+
+# Create empty table:
+
+res <- tibble()
+
+# Run individual models:
+
+for (i in seq_along(all_ids)) {
+  # Tell outside world where at:
+  
+  cat(str_c('Iteration: ', i, '; Fitting model for participant: ', all_ids[i], '\n\n'))
+  
+  # Extract subset that is only participant's data:
+  
+  this_df <- filter(df, id == all_ids[i])
+  
+  # Fit individual model to participant:
+  
+  this_mdl <- brm(number | vint(set_size) ~ 1 + movement,
+                  
+                  # Params:
+                  
+                  data = this_df,
+                  family = beta_binomial2,
+                  stanvars = stanvars,
+                  
+                  # MCMC settings:
+                  
+                  cores = 4, init = 0, control = mcmc_controls,
+                  warmup = 3000, iter = 5000, chains = 4,
+                  
+                  # MCMC settings for loop (suppress console output):
+                  
+                  silent = 2, refresh = 0)
+  
+  # Table of results:
+  
+  ppt_df <- this_mdl |> spread_draws(b_movementoutwards) |> 
+    select(b_movementoutwards) |> 
+    mutate(id = all_ids[i])
+  
+  # Append individual to full data:
+  
+  res <- bind_rows(res, ppt_df)
+}
+
+# Save tibble:
+
+write_csv(res, '../data/RNG_beta_mdl_individual_posteriors.csv')
+```
+
+Load the file since `EVAL = FALSE` above:
+
+```{r eval = TRUE}
+ind_df <- read_csv('../data/RNG_beta_mdl_individual_posteriors.csv')
+```
+
+Calculate 90% interval for each and compute "`significance`" using this criterion to answer the reviewer's question:
+
+```{r}
+ind_sum <- ind_df |> 
+  group_by(id) |> 
+  summarize(L_10 = quantile(b_movementoutwards, 0.1),
+            U_90 = quantile(b_movementoutwards, 0.9)) |> 
+  mutate(significance = if_else(L_10 > 0, 'yes', 'not'))
+
+# Check:
+
+ind_sum
+ind_sum |> 
+  count(significance) |> 
+  mutate(p = n / sum(n))
+```
+
+Only 16 had 90% credible intervals that did not include zero.
+
+Were there any ones that showed an effect that was "significantly" in the opposite direction?
+
+```{r}
+ind_sum <- ind_df |> 
+  group_by(id) |> 
+  summarize(L_10 = quantile(b_movementoutwards, 0.1),
+            U_90 = quantile(b_movementoutwards, 0.9)) |> 
+  mutate(significance = if_else(U_90 < 0, 'yes', 'not'))
+
+# Check:
+
+ind_sum
+ind_sum |> 
+  count(significance) |> 
+  mutate(p = n / sum(n))
+```
+
+How many had a 90% interval that was more towards the right side though, in the direction of the effect?
+
+```{r}
+ind_sum |> 
+  mutate(U_vs_L = if_else(U_90 > L_10, 'right-leaning', 'left-leaning')) |> 
+  count(U_vs_L)
+```
+
+What is each participants probability of being above zero?
+
+```{r}
+prop_above_0 <- ind_df |> 
+  mutate(sign = if_else(b_movementoutwards >= 0, '+', '-')) |> 
+  count(id, sign) |> 
+  filter(sign == '+') |> 
+  mutate(prop = n / 8000)
+
+# Check:
+
+prop_above_0
+```
+
+Now we can ask, for how many participants are we 50%/60%/70%/80%/90%/95% certain that they're above zero?
+
+```{r}
+sum(prop_above_0$prop > 0.5) / nrow(prop_above_0)
+sum(prop_above_0$prop > 0.8) / nrow(prop_above_0)
+sum(prop_above_0$prop > 0.9) / nrow(prop_above_0)
+sum(prop_above_0$prop > 0.95) / nrow(prop_above_0)
+```
+
+For 27% of the sample we're at least 80% certain it's a positive effect. For 13% of the sample were 90% certain (matches above). For only 10% can we be certain that it is 95% consistent.
 
 ## Language interaction
 
@@ -1281,7 +1577,7 @@ diff_p <- group_posts |>
   mutate(coefficient = factor(coefficient, levels = fac_order)) |> 
   ggplot(aes(x = estimate)) +
   facet_wrap(~coefficient, nrow = 3) +
-  geom_density(fill = 'purple')
+  geom_density(fill = 'darkgrey')
 
 # Axes and labels:
 
@@ -1472,7 +1768,7 @@ Have a look at the distribution of the BAG scale:
 ```{r}
 df_ppt_wide |> 
   ggplot(aes(x = BAG)) +
-  geom_density(fill = 'purple') +
+  geom_density(fill = 'darkgrey') +
   theme_classic()
 ```
 
@@ -1481,7 +1777,7 @@ Nothing too noteworthy.
 ```{r}
 df_ppt_wide |> 
   ggplot(aes(x = SNS)) +
-  geom_density(fill = 'purple') +
+  geom_density(fill = 'darkgrey') +
   theme_classic()
 ```
 
@@ -1579,7 +1875,7 @@ BAG_p <- BAG_p +
                      breaks = 2:5) +
   scale_y_continuous(limits = c(-4, 12),
                      breaks = seq(-4, 12, 2)) +
-  scale_fill_manual(values = c('purple', 'goldenrod3')) +
+  scale_fill_manual(values = c('darkblue', 'lightgrey')) +
   xlab('BAG scale') +
   ylab('Outwards - inwards difference')
 
@@ -1625,7 +1921,7 @@ SNS_p <- SNS_p +
                      breaks = 1:6) +
   scale_y_continuous(limits = c(-4, 12),
                      breaks = seq(-4, 12, 2)) +
-  scale_fill_manual(values = c('purple', 'goldenrod3')) +
+  scale_fill_manual(values = c('darkblue', 'lightgrey')) +
   xlab('SNS scale') +
   ylab('Outwards - inwards difference')
 
@@ -1940,8 +2236,8 @@ diff_p <- diff_df |>
   group_by(movement_towards) |> 
   mutate(p = n / sum(n)) |> 
   rename(`Relative change` = rel_change_cat) |> 
-  ggplot(aes(x = movement_towards,
-             fill = `Relative change`, y = p)) +
+  ggplot(aes(x = `Relative change`,
+             fill = movement_towards, y = p)) +
   geom_col(position = 'dodge',
            col = 'black',
            width = 0.7)
@@ -1952,7 +2248,7 @@ diff_p <- diff_p +
   scale_y_continuous(expand = c(0, 0),
                      limits = c(0, 0.8),
                      breaks = seq(0, 0.8, 0.2)) +
-  scale_fill_manual(values = c('steelblue', 'goldenrod3')) +
+  scale_fill_manual(values = c('lightgrey', 'purple')) +
   xlab(NULL) +
   ylab('Proportion')
 
@@ -1975,8 +2271,6 @@ ggsave(plot = diff_p,
        file = '../figures/png/up_down_barplot.png',
        width = 3.5, height = 3.5)
 ```
-
-**BANANA: Bodo: Maybe later make this into a publication-ready plot? Not a priority right now.**
 
 Look at how many times does it go up or down as a function of the `movement_towards` factor:
 
@@ -2080,6 +2374,7 @@ bayes_R2(relative_mdl)
 ```
 
 Very small amount.
+
 
 ## Language interaction
 
@@ -2203,7 +2498,7 @@ diff_p <- group_posts |>
   mutate(coefficient = factor(coefficient, levels = fac_order)) |> 
   ggplot(aes(x = estimate)) +
   facet_wrap(~coefficient, nrow = 3) +
-  geom_density(fill = 'purple')
+  geom_density(fill = 'darkgrey')
 
 # Axes and labels:
 
